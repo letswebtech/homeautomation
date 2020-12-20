@@ -1,0 +1,250 @@
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+final _firestore = FirebaseFirestore.instance;
+
+enum RoomType {
+  Bedroom,
+  DrawingRoom,
+  DinningRoom,
+  LivingRoom,
+  Kitchen,
+  Store,
+  Balcony,
+  Corridor,
+  Garage,
+  BathRoom,
+  WashRoom,
+  Others
+}
+
+Map<String, dynamic> _returnRoomType(String type) {
+  if (type == "Bedroom") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/bed-icon.png"),
+      "type": RoomType.Bedroom
+    };
+  } else if (type == "DinningRoom") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/dinning-icon.png"),
+      "type": RoomType.DinningRoom
+    };
+  } else if (type == "DrawingRoom") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/room-icon.png"),
+      "type": RoomType.DrawingRoom
+    };
+  } else if (type == "LivingRoom") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/living-icon.png"),
+      "type": RoomType.LivingRoom
+    };
+  } else if (type == "Kitchen") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/kitchen-icon.png"),
+      "type": RoomType.Kitchen
+    };
+  } else if (type == "Store") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/store-icon.png"),
+      "type": RoomType.Store
+    };
+  } else if (type == "Balcony") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/balcony-icon.png"),
+      "type": RoomType.Balcony
+    };
+  } else if (type == "Corridor") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/room-icon.png"),
+      "type": RoomType.Corridor
+    };
+  } else if (type == "Garage") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/garage-icon.png"),
+      "type": RoomType.Garage
+    };
+  } else if (type == "BathRoom") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/bathroom-icon.png"),
+      "type": RoomType.BathRoom
+    };
+  } else if (type == "WashRoom") {
+    return {
+      "imageIcon": AssetImage("assets/images/room/washroom-icon.png"),
+      "type": RoomType.WashRoom
+    };
+  } else {
+    return {
+      "imageIcon": AssetImage("assets/images/room/room-icon.png"),
+      "type": RoomType.Others
+    };
+  }
+}
+
+class Room with ChangeNotifier {
+  final String id;
+  final String name;
+  final String description;
+  final String imageUrl;
+  final RoomType type;
+  final bool isFavorite;
+  final bool status;
+  final String userUID;
+  final IconData icon;
+  final ImageProvider<Object> imageIcon;
+  bool isActive;
+
+  Room(
+      {@required this.userUID,
+      @required this.id,
+      @required this.name,
+      this.imageUrl,
+      this.description,
+      this.type = RoomType.Others,
+      this.isFavorite = false,
+      this.status = true,
+      this.icon,
+      this.imageIcon = const AssetImage("assets/images/room/room-icon.png"),
+      this.isActive = false});
+}
+
+class Rooms with ChangeNotifier {
+  final String userUID;
+
+  Rooms(this.userUID, this._rooms);
+
+  List<Room> _rooms = [];
+
+  List<Room> get rooms {
+    return [..._rooms];
+  }
+
+  List<Room> get favoritesItems {
+    return _rooms.where((room) => room.isFavorite).toList();
+  }
+
+  Room findById(String id) {
+    return _rooms.firstWhere((room) => room.id == id);
+  }
+
+  Future<void> toggleActiveStatus(String id) async {
+    _rooms.forEach((room) {
+      if (room.id == id) {
+        room.isActive = true;
+      } else {
+        room.isActive = false;
+      }
+    });
+    notifyListeners();
+  }
+
+  Future<void> fetchAndSetRooms() async {
+    try {
+      final extractData = await _firestore.collection("rooms").get();
+
+      final List<Room> loadingRooms = [];
+      extractData.docs.forEach((roomSnapshot) {
+        final room = roomSnapshot.data();
+        loadingRooms.add(
+          Room(
+            id: roomSnapshot.id,
+            name: room["name"],
+            imageUrl: room["image_url"],
+            type: _returnRoomType(room["type"])['type'],
+            imageIcon: _returnRoomType(room["type"])['imageIcon'],
+            description: room["description"],
+            isFavorite: room["is_favourite"],
+            status: room["status"],
+            userUID: room["user_uid"],
+          ),
+        );
+      });
+      if (loadingRooms.first != null) {
+        loadingRooms.first.isActive = true;
+      }
+      _rooms = loadingRooms;
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> addRoom(room) async {
+    try {
+      final roomSnapshot = await _firestore.collection("rooms").add({
+        "name": room["name"],
+        "description": room["description"],
+        "image_url": room["image_url"],
+        "type": room["type"],
+        "is_favourite": room["is_favourite"],
+        "status": room["status"],
+        "user_uid": userUID,
+      });
+
+      final newRoom = Room(
+        id: roomSnapshot.id,
+        name: room["name"],
+        imageUrl: room["image_url"],
+        type: _returnRoomType(room["type"])['type'],
+        imageIcon: _returnRoomType(room["type"])['imageIcon'],
+        description: room["description"],
+        isFavorite: room["is_favourite"],
+        status: room["status"],
+        userUID: userUID,
+      );
+
+      _rooms.add(newRoom);
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Future<void> updateProduct(String id, Product newProduct) async {
+  //   final prodIndex = _items.indexWhere((prod) => prod.id == id);
+  //   if (prodIndex >= 0) {
+  //     try {
+  //       final url =
+  //           'https://flutter-app-47e55.firebaseio.com/products/$id.json?auth=$authToken';
+  //       await http.patch(
+  //         url,
+  //         body: json.encode({
+  //           'title': newProduct.title,
+  //           'description': newProduct.description,
+  //           'price': newProduct.price,
+  //           'imageUrl': newProduct.imageUrl,
+  //         }),
+  //       );
+  //       _items[prodIndex] = newProduct;
+  //       notifyListeners();
+  //     } catch (error) {
+  //       throw error;
+  //     }
+  //   } else {
+  //     print('...');
+  //   }
+  // }
+
+  // Future<void> deleteProduct(String id) async {
+  //   final url =
+  //       'https://flutter-app-47e55.firebaseio.com/products/$id.json?auth=$authToken';
+  //   final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
+  //   var existingProduct = _items[existingProductIndex];
+
+  //   //remove localy
+  //   _items.removeAt(existingProductIndex);
+  //   notifyListeners();
+
+  //   ///remove from server
+  //   final response = await http.delete(url);
+
+  //   if (response.statusCode >= 400) {
+  //     _items.insert(existingProductIndex, existingProduct);
+  //     notifyListeners();
+  //     throw HttpException('Could not delete product');
+  //   }
+
+  //   existingProduct = null;
+  // }
+}

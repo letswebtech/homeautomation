@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "492344480656",
+    "firebase_url": "https://smarthome-letswebtech.firebaseio.com",
+    "project_id": "smarthome-letswebtech",
+    "storage_bucket": "smarthome-letswebtech.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492344480656:android:95f72aa83607b44b21d915",
+        "android_client_info": {
+          "package_name": "com.letswebtech.smarthome"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492344480656-71p11hrgfscn2di83hk8pl14d2k3po7s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3JvkkeOM-3WmIf3El_ikxC2sy5UtITJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "492344480656-71p11hrgfscn2di83hk8pl14d2k3po7s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

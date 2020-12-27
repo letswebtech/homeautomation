@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-const kCardColor = Color.fromRGBO(61, 60, 62,.8);
-
+const kCardColor = Color.fromRGBO(61, 60, 62, .8);
 
 const kHeadingTextStyle = TextStyle(
   fontSize: 30,
@@ -24,7 +24,6 @@ const kTextFieldStyle = InputDecoration(
   ),
 );
 
-
 const List<String> kRoomType = [
   'Bedroom',
   'DrawingRoom',
@@ -40,18 +39,45 @@ const List<String> kRoomType = [
   'Others'
 ];
 
-
-const List<String> kComponentType = [
-  'Bedroom',
-  'DrawingRoom',
-  'DinningRoom',
-  'LivingRoom',
-  'Kitchen',
-  'Store',
-  'Balcony',
-  'Corridor',
-  'Garage',
-  'BathRoom',
-  'WashRoom',
+const List<String> kAppliance = [
+  'bulb',
+  'fan',
+  'ac',
+  'socket',
   'Others'
 ];
+
+const Map<String, Map<String, dynamic>> kApplianceList = {
+  "bulb": {
+    "name": "Light Buld",
+    "icon": FontAwesomeIcons.lightbulb,
+  },
+  "fan": {
+    "name": "Light Buld",
+    "icon": FontAwesomeIcons.fan,
+  },
+  "socket": {
+    "name": "Light Buld",
+    "icon": FontAwesomeIcons.plug,
+  },
+  "ac": {
+    "name": "Light Buld",
+    "icon": Icons.ac_unit
+  }
+};
+
+
+const Map<String, Map<String, dynamic>> kSensorList = {
+  "motion": {
+    "name": "Light Buld",
+    "icon": FontAwesomeIcons.cat
+  },
+  "light": {
+    "name": "Light Buld",
+    "icon": FontAwesomeIcons.sun,
+  },
+  "heat": {
+    "name": "Light Buld",
+    "icon": FontAwesomeIcons.fireAlt,
+  }
+};

@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 final _firestore = FirebaseFirestore.instance;
 
 class DeviceComponent {
-  final String name;
-  final String description;
-  final String type;
+  String name;
+  String description;
+  String type;
   final int gpio;
   final bool isInput;
   bool isFavorite;
@@ -32,15 +32,16 @@ class Device {
   bool isFavorite;
   bool isActive;
 
-  Device(
-      {@required this.id,
-      @required this.name,
-      this.description,
-      this.component,
-      this.user,
-      this.room,
-      this.isFavorite = false,
-      this.isActive = true});
+  Device({
+    @required this.id,
+    @required this.name,
+    this.description,
+    this.component,
+    this.user,
+    this.room,
+    this.isFavorite = false,
+    this.isActive = true,
+  });
 }
 
 class Devices with ChangeNotifier {
@@ -86,7 +87,6 @@ class Devices with ChangeNotifier {
         final List<DeviceComponent> componentList = [];
 
         device["component"].forEach((deviceComponent) {
-          print(deviceComponent);
           componentList.add(DeviceComponent(
             name: deviceComponent["name"],
             description: deviceComponent["description"],
@@ -152,40 +152,52 @@ class Devices with ChangeNotifier {
     }
   }
 
-  // Future<void> updateRoom(String id, newRoom) async {
-  //   final roomIndex = _rooms.indexWhere((room) => room.id == id);
-  //   if (roomIndex >= 0) {
-  //     try {
-  //       await _firestore.collection("rooms").doc(id).update({
-  //         "id": newRoom["id"],
-  //         "name": newRoom["name"],
-  //         "description": newRoom["description"],
-  //         "image_url": newRoom["image_url"],
-  //         "type": newRoom["type"],
-  //         "is_favorite": newRoom["is_favorite"],
-  //         "status": newRoom["status"],
-  //         "user_uid": userUID,
-  //       });
+  Future<void> updateDevice(String id, newDevice) async {
+    final deviceIndex = _devices.indexWhere((device) => device.id == id);
+    if (deviceIndex >= 0) {
+      try {
 
-  //       _rooms[roomIndex] = Room(
-  //         id: id,
-  //         name: newRoom["name"],
-  //         imageUrl: newRoom["image_url"],
-  //         type: _returnRoomType(newRoom["type"])['type'],
-  //         imageIcon: _returnRoomType(newRoom["type"])['imageIcon'],
-  //         description: newRoom["description"],
-  //         isFavorite: newRoom["is_favorite"],
-  //         status: newRoom["status"],
-  //         userUID: userUID,
-  //       );
-  //       notifyListeners();
-  //     } catch (error) {
-  //       throw error;
-  //     }
-  //   } else {
-  //     print('...');
-  //   }
-  // }
+        final tempComponent = [];
+        newDevice["component"].forEach((component){
+          tempComponent.add({
+            "name": component.name,
+            "description": component.description,
+            "type": component.type,
+            "gpio": component.gpio,
+            "is_input": component.isInput,
+            "is_favorite": component.isFavorite,
+            "is_active": component.isActive
+          });
+        });
+
+        await _firestore.collection("devices").doc(id).update({
+          "name": newDevice["name"],
+          "description": newDevice["description"],
+          "is_favorite": newDevice["is_favorite"],
+          "is_active": newDevice["is_active"],
+          "room": newDevice["room"],
+          "user": newDevice["user"],
+          "component": tempComponent,
+        });
+
+        _devices[deviceIndex] = Device(
+          id: id,
+          name: newDevice["name"],
+          description: newDevice["description"],
+          isFavorite: newDevice["is_favorite"],
+          isActive: newDevice["is_active"],
+          room: newDevice["room"],
+          user: newDevice["user"],
+          component: newDevice["component"],
+        );
+        notifyListeners();
+      } catch (error) {
+        throw error;
+      }
+    } else {
+      print('...');
+    }
+  }
 
   // Future<void> deleteProduct(String id) async {
   //   final url =

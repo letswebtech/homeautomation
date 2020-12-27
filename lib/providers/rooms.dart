@@ -206,7 +206,6 @@ class Rooms with ChangeNotifier {
     if (roomIndex >= 0) {
       try {
         await _firestore.collection("rooms").doc(id).update({
-          "id": newRoom["id"],
           "name": newRoom["name"],
           "description": newRoom["description"],
           "image_url": newRoom["image_url"],

@@ -20,7 +20,6 @@ class DeviceScreen extends StatelessWidget {
   _showAddNoteDialog(BuildContext context) => showDialog(
         context: context,
         builder: (context) {
-          TextEditingController();
           return AlertDialog(
             title: Text("Add New Device"),
             content: SingleChildScrollView(

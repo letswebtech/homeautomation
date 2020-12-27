@@ -39,3 +39,19 @@ const List<String> kRoomType = [
   'WashRoom',
   'Others'
 ];
+
+
+const List<String> kComponentType = [
+  'Bedroom',
+  'DrawingRoom',
+  'DinningRoom',
+  'LivingRoom',
+  'Kitchen',
+  'Store',
+  'Balcony',
+  'Corridor',
+  'Garage',
+  'BathRoom',
+  'WashRoom',
+  'Others'
+];

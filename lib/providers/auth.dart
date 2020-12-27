@@ -49,6 +49,7 @@ class Auth with ChangeNotifier {
   }
 
   String get userId {
+    print(_userId);
     return _userId;
   }
 

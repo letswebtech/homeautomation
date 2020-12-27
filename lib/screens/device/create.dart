@@ -1,68 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/rooms.dart';
+import '../../providers/devices.dart';
 import '../../widgets/form_submit_button.dart';
 
 import '../../containts.dart';
 
-class CreateRoomScreen extends StatelessWidget {
-  static const routeName = 'room/create';
+class CreateDeviceScreen extends StatelessWidget {
+  static const routeName = 'device/create';
 
   @override
   Widget build(BuildContext context) {
-    final roomID = ModalRoute.of(context).settings.arguments;
+    final deviceID = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(roomID == null ? "Create Room" : "Edit Room"),
+        title: Text(deviceID == null ? "Create Device" : "Edit Device"),
       ),
-      body: MainPage(roomID),
+      body: MainPage(deviceID),
     );
   }
 }
 
 class MainPage extends StatefulWidget {
-  final String roomID;
+  final String deviceID;
 
-  MainPage(this.roomID);
+  MainPage(this.deviceID);
 
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  
   String _id;
   String _name;
-  String _type;
-  bool _is_favorite = false;
-  bool _status = false;
   String _description;
-  String _image_url;
+  List<DeviceComponent> _component;
+  List<String> _user;
+  List<String> _room;
+  bool _is_favorite;
+  bool _is_active;
 
   @override
   void initState() {
-    Room room = null;
-    if (widget.roomID != null) {
-      Room room =
-          Provider.of<Rooms>(context, listen: false).findById(widget.roomID);
-    _id = room.id; 
-    _name = room.name;
-    _type = room.type.toString().substring(room.type.toString().indexOf('.') + 1);
-    _is_favorite = room.isFavorite;
-    _status = room.status;
-    _description = room.description;
-    _image_url = room.imageUrl;
+    Device device = null;
+    if (widget.deviceID != null) {
+      Device device = Provider.of<Devices>(context, listen: false)
+          .findById(widget.deviceID);
+      _id = device.id;
+      _name = device.name;
+      _description = device.description;
+      _component = device.component;
+      _user = device.user;
+      _room = device.room;
+      _is_favorite = device.isFavorite;
+      _is_active = device.isActive;
     }
     super.initState();
   }
 
   final _nameFocusNode = FocusNode();
-  final _typeFocusNode = FocusNode();
-  final _is_favoriteFocusNode = FocusNode();
-  final _is_statusFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
-  final _image_urlFocusNode = FocusNode();
+  final _is_favoriteFocusNode = FocusNode();
+  final _is_activeFocusNode = FocusNode();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -74,38 +73,13 @@ class _MainPageState extends State<MainPage> {
       textInputAction: TextInputAction.next,
       focusNode: _nameFocusNode,
       onFieldSubmitted: (_value) {
-        FocusScope.of(context).requestFocus(_typeFocusNode);
+        FocusScope.of(context).requestFocus(_descriptionFocusNode);
       },
       validator: (String value) {
         if (value.isEmpty) {
           return 'Name is Required';
         }
         _name = value;
-        return null;
-      },
-    );
-  }
-
-  Widget _buildType() {
-    return DropdownButtonFormField(
-      decoration: kTextFieldStyle.copyWith(labelText: "Type"),
-      value: _type,
-      items: kRoomType.map<DropdownMenuItem<String>>((String _value) {
-        return DropdownMenuItem<String>(
-          value: _value,
-          child: Text(_value),
-        );
-      }).toList(),
-      onChanged: (_value) {
-        FocusScope.of(context).requestFocus(_descriptionFocusNode);
-        print(_value);
-      },
-      focusNode: _typeFocusNode,
-      validator: (String value) {
-        if (value == null) {
-          return 'Type is Required';
-        }
-        _type = value;
         return null;
       },
     );
@@ -121,7 +95,7 @@ class _MainPageState extends State<MainPage> {
       textInputAction: TextInputAction.next,
       focusNode: _descriptionFocusNode,
       onFieldSubmitted: (_value) {
-        FocusScope.of(context).requestFocus(_image_urlFocusNode);
+        //FocusScope.of(context).requestFocus(_image_urlFocusNode);
       },
       validator: (String value) {
         _description = value;
@@ -130,21 +104,20 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _buildImage() {
+  Widget _buildRoom() {
     return TextFormField(
-      decoration: kTextFieldStyle.copyWith(labelText: "Image URL"),
-      keyboardType: TextInputType.url,
+      decoration: kTextFieldStyle.copyWith(labelText: "Room"),
+      keyboardType: TextInputType.text,
+      minLines: 2,
+      maxLines: 5,
+      initialValue: _description,
       textInputAction: TextInputAction.next,
-      focusNode: _image_urlFocusNode,
-      initialValue: _image_url,
+      focusNode: _descriptionFocusNode,
       onFieldSubmitted: (_value) {
-        FocusScope.of(context).requestFocus(_is_favoriteFocusNode);
+        //FocusScope.of(context).requestFocus(_image_urlFocusNode);
       },
       validator: (String value) {
-        if (value.isEmpty) {
-          return 'Image URL is Required';
-        }
-        _image_url = value;
+        _description = value;
         return null;
       },
     );
@@ -164,7 +137,7 @@ class _MainPageState extends State<MainPage> {
           value: _is_favorite,
           activeColor: Colors.green,
           onChanged: (bool isSwitched) {
-            FocusScope.of(context).requestFocus(_is_statusFocusNode);
+            FocusScope.of(context).requestFocus(_is_activeFocusNode);
             setState(() {
               _is_favorite = isSwitched;
             });
@@ -174,7 +147,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _buildStatus() {
+  Widget _buildActive() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -184,12 +157,12 @@ class _MainPageState extends State<MainPage> {
           style: kHeadingLableTextStyle,
         ),
         Switch.adaptive(
-          focusNode: _is_statusFocusNode,
-          value: _status,
+          focusNode: _is_activeFocusNode,
+          value: _is_active,
           activeColor: Colors.green,
           onChanged: (bool isSwitched) {
             setState(() {
-              _status = isSwitched;
+              _is_active = isSwitched;
             });
           },
         )
@@ -212,11 +185,10 @@ class _MainPageState extends State<MainPage> {
                 child: Column(
                   children: <Widget>[
                     _buildName(),
-                    _buildType(),
                     _buildDescription(),
-                    _buildImage(),
+                    _buildRoom(),
                     _buildFavorite(),
-                    _buildStatus(),
+                    _buildActive(),
                   ],
                 ),
               ),
@@ -231,13 +203,9 @@ class _MainPageState extends State<MainPage> {
 
                     try {
                       Map<String, dynamic> room = {
-                        "id": _id, 
+                        "id": _id,
                         "name": _name,
-                        "type": _type,
                         "description": _description,
-                        "image_url": _image_url,
-                        "is_favorite": _is_favorite,
-                        "status": _status,
                       };
                       Scaffold.of(context).hideCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(
@@ -250,26 +218,15 @@ class _MainPageState extends State<MainPage> {
                           backgroundColor: Colors.green,
                         ),
                       );
-                      if(_id == null){
-                         await Provider.of<Rooms>(context, listen: false)
-                          .addRoom(room);
-                      }else{
-                         await Provider.of<Rooms>(context, listen: false)
-                          .updateRoom(_id ,room);
+                      if (_id == null) {
+                        //TODO : Add new device
+                      } else {
+                        // await Provider.of<Devices>(context, listen: false)
+                        //     .updateDevice(_id, room);
                       }
-                      
                       Navigator.of(context).pop();
                     } catch (error) {
                       var errorMessage = error.toString();
-                      if (error.toString().contains('wrong-password')) {
-                        errorMessage = 'Invalid Password!';
-                      } else if (error.toString().contains('user-not-found')) {
-                        errorMessage = 'User Not Found';
-                      } else if (error
-                          .toString()
-                          .contains('email-already-in-use')) {
-                        errorMessage = 'Email Already In Use';
-                      }
                       Scaffold.of(context).hideCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(
                         SnackBar(

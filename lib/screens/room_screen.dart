@@ -73,6 +73,11 @@ class RoomScreen extends StatelessWidget {
                                       await roomsData.toggleActiveStatus(
                                           roomsData.rooms[index].id);
                                     },
+                                    onLongPress: () async {
+                                      await roomsData.toggleActiveStatus(
+                                          roomsData.rooms[index].id);
+                                      Navigator.of(context).pushNamed(CreateRoomScreen.routeName, arguments: roomsData.rooms[index].id);
+                                    },
                                   );
                                 },
                               );

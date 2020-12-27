@@ -141,7 +141,7 @@ class Rooms with ChangeNotifier {
 
   Future<void> fetchAndSetRooms() async {
     try {
-      final extractData = await _firestore.collection("rooms").get();
+      final extractData = await _firestore.collection("rooms").where("user_uid", isEqualTo: userUID).get();
 
       final List<Room> loadingRooms = [];
       extractData.docs.forEach((roomSnapshot) {
@@ -154,13 +154,13 @@ class Rooms with ChangeNotifier {
             type: _returnRoomType(room["type"])['type'],
             imageIcon: _returnRoomType(room["type"])['imageIcon'],
             description: room["description"],
-            isFavorite: room["is_favourite"],
+            isFavorite: room["is_favorite"],
             status: room["status"],
             userUID: room["user_uid"],
           ),
         );
       });
-      if (loadingRooms.first != null) {
+      if (loadingRooms.length > 0) {
         loadingRooms.first.isActive = true;
       }
       _rooms = loadingRooms;
@@ -177,7 +177,7 @@ class Rooms with ChangeNotifier {
         "description": room["description"],
         "image_url": room["image_url"],
         "type": room["type"],
-        "is_favourite": room["is_favourite"],
+        "is_favorite": room["is_favorite"],
         "status": room["status"],
         "user_uid": userUID,
       });
@@ -189,7 +189,7 @@ class Rooms with ChangeNotifier {
         type: _returnRoomType(room["type"])['type'],
         imageIcon: _returnRoomType(room["type"])['imageIcon'],
         description: room["description"],
-        isFavorite: room["is_favourite"],
+        isFavorite: room["is_favorite"],
         status: room["status"],
         userUID: userUID,
       );
@@ -201,30 +201,40 @@ class Rooms with ChangeNotifier {
     }
   }
 
-  // Future<void> updateProduct(String id, Product newProduct) async {
-  //   final prodIndex = _items.indexWhere((prod) => prod.id == id);
-  //   if (prodIndex >= 0) {
-  //     try {
-  //       final url =
-  //           'https://flutter-app-47e55.firebaseio.com/products/$id.json?auth=$authToken';
-  //       await http.patch(
-  //         url,
-  //         body: json.encode({
-  //           'title': newProduct.title,
-  //           'description': newProduct.description,
-  //           'price': newProduct.price,
-  //           'imageUrl': newProduct.imageUrl,
-  //         }),
-  //       );
-  //       _items[prodIndex] = newProduct;
-  //       notifyListeners();
-  //     } catch (error) {
-  //       throw error;
-  //     }
-  //   } else {
-  //     print('...');
-  //   }
-  // }
+  Future<void> updateRoom(String id, newRoom) async {
+    final roomIndex = _rooms.indexWhere((room) => room.id == id);
+    if (roomIndex >= 0) {
+      try {
+        await _firestore.collection("rooms").doc(id).update({
+          "id": newRoom["id"],
+          "name": newRoom["name"],
+          "description": newRoom["description"],
+          "image_url": newRoom["image_url"],
+          "type": newRoom["type"],
+          "is_favorite": newRoom["is_favorite"],
+          "status": newRoom["status"],
+          "user_uid": userUID,
+        });
+
+        _rooms[roomIndex] = Room(
+          id: id,
+          name: newRoom["name"],
+          imageUrl: newRoom["image_url"],
+          type: _returnRoomType(newRoom["type"])['type'],
+          imageIcon: _returnRoomType(newRoom["type"])['imageIcon'],
+          description: newRoom["description"],
+          isFavorite: newRoom["is_favorite"],
+          status: newRoom["status"],
+          userUID: userUID,
+        );
+        notifyListeners();
+      } catch (error) {
+        throw error;
+      }
+    } else {
+      print('...');
+    }
+  }
 
   // Future<void> deleteProduct(String id) async {
   //   final url =

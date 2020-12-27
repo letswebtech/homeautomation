@@ -6,9 +6,9 @@ import './automation_screen.dart';
 import './room_screen.dart';
 import '../containts.dart';
 import '../widgets/app_drawer.dart';
-import './device_screen.dart';
 import './user_screen.dart';
 import './welcome_screen.dart';
+import './device_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/';
@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     'USER'
   ];
 
-  int _selectedPageIndex = 0;
+  int _selectedPageIndex = 1;
 
   void _selectPage(int index){
     setState(() {
@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.laptopHouse), label: 'Rooms'),
           BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.hdd), label: 'Devices'),
+              icon: Icon(FontAwesomeIcons.microchip), label: 'Devices'),
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.home), label: 'Home'),
           BottomNavigationBarItem(

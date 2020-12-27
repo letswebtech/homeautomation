@@ -12,8 +12,10 @@ class DeviceItemCard extends StatelessWidget {
   Function onDoubleTap;
   Function onDoubl;
   Function onLongPress;
+  Key key;
 
   DeviceItemCard({
+    this.key,
     @required this.icon,
     @required this.roomName,
     @required this.statusMessage,
@@ -22,7 +24,7 @@ class DeviceItemCard extends StatelessWidget {
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

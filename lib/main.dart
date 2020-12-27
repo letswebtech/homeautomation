@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smartHome/screens/room/create.dart';
+import './screens/device/create.dart';
+import './providers/devices.dart';
+import './screens/room/create.dart';
 import './containts.dart';
 import './providers/rooms.dart';
 import './screens/home_screen.dart';
@@ -23,10 +25,15 @@ class SmartHome extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: Auth()),
         ChangeNotifierProxyProvider<Auth, Rooms>(
-            create: null,
-            update: (ctx, auth, roomProvider) => Rooms(
-                auth.userId,
-                roomProvider == null ? [] : roomProvider.rooms)),
+          create: null,
+          update: (ctx, auth, roomProvider) => Rooms(
+              auth.userId, roomProvider == null ? [] : roomProvider.rooms),
+        ),
+        ChangeNotifierProxyProvider<Auth, Devices>(
+          create: null,
+          update: (ctx, auth, deviceProvider) => Devices(
+              auth.userId, deviceProvider == null ? [] : deviceProvider.devices),
+        ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
@@ -60,6 +67,7 @@ class SmartHome extends StatelessWidget {
           routes: {
             AuthScreen.routeName: (ctx) => AuthScreen(),
             CreateRoomScreen.routeName: (ctx) => CreateRoomScreen(),
+            CreateDeviceScreen.routeName: (ctx) => CreateDeviceScreen(),
           },
         ),
       ),

@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     'USER'
   ];
 
-  int _selectedPageIndex = 1;
+  int _selectedPageIndex = 2;
 
   void _selectPage(int index){
     setState(() {

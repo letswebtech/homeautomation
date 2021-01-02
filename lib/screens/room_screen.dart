@@ -68,14 +68,10 @@ class RoomScreen extends StatelessWidget {
                                     roomName:
                                         roomsData.rooms[index].name.toString(),
                                     statusMessage: "off",
-                                    isActive: roomsData.rooms[index].isActive,
+                                    isActive: false,
                                     onTap: () async {
-                                      await roomsData.toggleActiveStatus(
-                                          roomsData.rooms[index].id);
                                     },
                                     onLongPress: () async {
-                                      await roomsData.toggleActiveStatus(
-                                          roomsData.rooms[index].id);
                                       Navigator.of(context).pushNamed(CreateRoomScreen.routeName, arguments: roomsData.rooms[index].id);
                                     },
                                   );

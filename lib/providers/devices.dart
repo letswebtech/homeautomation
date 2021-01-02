@@ -51,8 +51,14 @@ class Devices with ChangeNotifier {
 
   List<Device> _devices = [];
 
+  List<DeviceComponent> _componentList = [];
+
   List<Device> get devices {
     return [..._devices];
+  }
+
+  List<DeviceComponent> get deviceComponents {
+    return [..._componentList];
   }
 
   List<Device> get favoritesItems {
@@ -61,17 +67,6 @@ class Devices with ChangeNotifier {
 
   Device findById(String id) {
     return _devices.firstWhere((device) => device.id == id);
-  }
-
-  Future<void> toggleActiveStatus(String id) async {
-    _devices.forEach((device) {
-      if (device.id == id) {
-        device.isActive = true;
-      } else {
-        device.isActive = false;
-      }
-    });
-    notifyListeners();
   }
 
   Future<void> fetchAndSetDevices() async {
@@ -112,10 +107,40 @@ class Devices with ChangeNotifier {
         );
       });
 
-      if (loadingDevices.length > 0) {
-        loadingDevices.first.isActive = true;
-      }
       _devices = loadingDevices;
+      notifyListeners();
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+  }
+
+  Future<void> fetchAndSetComponents() async {
+    try {
+      //final extractData = await _firestore.collection("devices").get();
+      final extractData = await _firestore
+          .collection("devices")
+          .where("user", arrayContainsAny: [userUID]).get();
+
+      final List<DeviceComponent> loadingComponentList = [];
+
+      extractData.docs.forEach((deviceSnapshot) {
+        final device = deviceSnapshot.data();
+
+        device["component"].forEach((deviceComponent) {
+          loadingComponentList.add(DeviceComponent(
+            name: deviceComponent["name"],
+            description: deviceComponent["description"],
+            type: deviceComponent["type"],
+            gpio: deviceComponent["gpio"],
+            isInput: deviceComponent["is_input"],
+            isActive: deviceComponent["is_active"],
+            isFavorite: deviceComponent["is_favorite"],
+          ));
+        });
+      });
+
+      _componentList = loadingComponentList;
       notifyListeners();
     } catch (error) {
       print(error);
@@ -153,7 +178,6 @@ class Devices with ChangeNotifier {
   }
 
   Future<void> createDevice(device) async {
-    
     try {
       final tempComponent = [];
       device["component"].forEach((component) {

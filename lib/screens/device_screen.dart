@@ -81,9 +81,9 @@ class DeviceScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ActionButtonCard(
-              title: "Device",
+              title: "DEVICE",
               onPressAdd: () {
-                 if (userProfile.uid == kAdminUID) {
+                if (userProfile.uid == kAdminUID) {
                   Navigator.of(context).pushNamed(CreateDeviceScreen.routeName);
                 } else {
                   _showAddNoteDialog(context);
@@ -121,15 +121,9 @@ class DeviceScreen extends StatelessWidget {
                                             .devices[index].name
                                             .toString(),
                                         statusMessage: "off",
-                                        isActive:
-                                            devicesData.devices[index].isActive,
-                                        onTap: () async {
-                                          await devicesData.toggleActiveStatus(
-                                              devicesData.devices[index].id);
-                                        },
+                                        isActive: false,
+                                        onTap: () async {},
                                         onLongPress: () async {
-                                          await devicesData.toggleActiveStatus(
-                                              devicesData.devices[index].id);
                                           Navigator.of(context).pushNamed(
                                             CreateDeviceScreen.routeName,
                                             arguments:

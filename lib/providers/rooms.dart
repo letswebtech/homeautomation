@@ -128,17 +128,6 @@ class Rooms with ChangeNotifier {
     return _rooms.firstWhere((room) => room.id == id);
   }
 
-  Future<void> toggleActiveStatus(String id) async {
-    _rooms.forEach((room) {
-      if (room.id == id) {
-        room.isActive = true;
-      } else {
-        room.isActive = false;
-      }
-    });
-    notifyListeners();
-  }
-
   Future<void> fetchAndSetRooms() async {
     try {
       final extractData = await _firestore.collection("rooms").where("user_uid", isEqualTo: userUID).get();

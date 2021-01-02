@@ -11,6 +11,11 @@ const kHeadingTextStyle = TextStyle(
   fontWeight: FontWeight.w900,
 );
 
+const kHeadingTextStyle2 = TextStyle(
+  fontSize: 22,
+  fontWeight: FontWeight.w900,
+);
+
 const kActiveIconColor = Color.fromRGBO(255, 146, 41, 1);
 
 const kHeadingLableTextStyle = TextStyle(

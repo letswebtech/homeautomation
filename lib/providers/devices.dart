@@ -11,6 +11,7 @@ class DeviceComponent {
   bool isInput;
   bool isFavorite;
   bool isActive;
+  final String deviceID;
 
   DeviceComponent(
       {@required this.name,
@@ -19,7 +20,8 @@ class DeviceComponent {
       @required this.gpio,
       @required this.isInput,
       this.isFavorite = false,
-      this.isActive = true});
+      this.isActive = true,
+      this.deviceID});
 }
 
 class Device {
@@ -83,6 +85,7 @@ class Devices with ChangeNotifier {
 
         device["component"].forEach((deviceComponent) {
           componentList.add(DeviceComponent(
+            deviceID: deviceSnapshot.id,
             name: deviceComponent["name"],
             description: deviceComponent["description"],
             type: deviceComponent["type"],
@@ -129,6 +132,7 @@ class Devices with ChangeNotifier {
 
         device["component"].forEach((deviceComponent) {
           loadingComponentList.add(DeviceComponent(
+            deviceID: deviceSnapshot.id,
             name: deviceComponent["name"],
             description: deviceComponent["description"],
             type: deviceComponent["type"],

@@ -57,7 +57,7 @@ class WelcomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Appliances", style: kHeadingLableTextStyle),
+                  Text("Appliances", style: kHeadingTextStyle2),
                   Expanded(
                     flex: 2,
                     child: FutureBuilder(
@@ -101,7 +101,7 @@ class WelcomeScreen extends StatelessWidget {
                                 ),
                     ),
                   ),
-                  Text("Rooms", style: kHeadingLableTextStyle),
+                  Text("Rooms", style: kHeadingTextStyle2),
                   Expanded(
                     child: FutureBuilder(
                       future: _refreshRooms(context),
@@ -131,8 +131,7 @@ class WelcomeScreen extends StatelessWidget {
                                             .toString(),
                                         statusMessage: "off",
                                         isActive: false,
-                                        onTap: () async {
-                                         },
+                                        onTap: () async {},
                                         onLongPress: () async {
                                           Navigator.of(context).pushNamed(
                                               CreateRoomScreen.routeName,
@@ -147,7 +146,7 @@ class WelcomeScreen extends StatelessWidget {
                             ),
                     ),
                   ),
-                  Text("Devices", style: kHeadingLableTextStyle),
+                  Text("Devices", style: kHeadingTextStyle2),
                   Expanded(
                     child: FutureBuilder(
                       future: _refreshDevices(context),

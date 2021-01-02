@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import '../providers/auth.dart';
 import '../screens/device/create.dart';
 
 import '../containts.dart';
@@ -61,6 +62,7 @@ class DeviceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProfile = Provider.of<Auth>(context, listen: false).userProfile;
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
     return SafeArea(
@@ -81,7 +83,11 @@ class DeviceScreen extends StatelessWidget {
             ActionButtonCard(
               title: "Device",
               onPressAdd: () {
-                _showAddNoteDialog(context);
+                 if (userProfile.uid == kAdminUID) {
+                  Navigator.of(context).pushNamed(CreateDeviceScreen.routeName);
+                } else {
+                  _showAddNoteDialog(context);
+                }
               },
             ),
             Container(
@@ -89,51 +95,53 @@ class DeviceScreen extends StatelessWidget {
               child: Expanded(
                 child: FutureBuilder(
                   future: _refreshDevices(context),
-                  builder: (ctx, snapshot) => snapshot.connectionState ==
-                          ConnectionState.waiting
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : RefreshIndicator(
-                          color: Colors.white,
-                          backgroundColor: Colors.white,
-                          onRefresh: () => _refreshDevices(context),
-                          child: Consumer<Devices>(
-                            builder: (ctx, devicesData, _) {
-                              return GridView.builder(
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: devicesData.devices.length,
-                                itemBuilder: (_, int index) {
-                                  return DeviceItemCard(
-                                    key: Key(devicesData.devices[index].id
-                                        .toString()),
-                                    icon: FontAwesomeIcons.hdd,
-                                    roomName: devicesData.devices[index].name
-                                        .toString(),
-                                    statusMessage: "off",
-                                    isActive:
-                                        devicesData.devices[index].isActive,
-                                    onTap: () async {
-                                      await devicesData.toggleActiveStatus(
-                                          devicesData.devices[index].id);
-                                    },
-                                    onLongPress: () async {
-                                      await devicesData.toggleActiveStatus(
-                                          devicesData.devices[index].id);
-                                      Navigator.of(context).pushNamed(
-                                          CreateDeviceScreen.routeName,
-                                          arguments:
+                  builder: (ctx, snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : RefreshIndicator(
+                              color: Colors.white,
+                              backgroundColor: Colors.white,
+                              onRefresh: () => _refreshDevices(context),
+                              child: Consumer<Devices>(
+                                builder: (ctx, devicesData, _) {
+                                  return GridView.builder(
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: devicesData.devices.length,
+                                    itemBuilder: (_, int index) {
+                                      return DeviceItemCard(
+                                        key: Key(devicesData.devices[index].id
+                                            .toString()),
+                                        icon: FontAwesomeIcons.hdd,
+                                        roomName: devicesData
+                                            .devices[index].name
+                                            .toString(),
+                                        statusMessage: "off",
+                                        isActive:
+                                            devicesData.devices[index].isActive,
+                                        onTap: () async {
+                                          await devicesData.toggleActiveStatus(
                                               devicesData.devices[index].id);
+                                        },
+                                        onLongPress: () async {
+                                          await devicesData.toggleActiveStatus(
+                                              devicesData.devices[index].id);
+                                          Navigator.of(context).pushNamed(
+                                            CreateDeviceScreen.routeName,
+                                            arguments:
+                                                devicesData.devices[index].id,
+                                          );
+                                        },
+                                      );
                                     },
                                   );
                                 },
-                              );
-                            },
-                          ),
-                        ),
+                              ),
+                            ),
                 ),
               ),
             ),

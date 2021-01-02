@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+const kAdminUID = "r9Yswny1FGZ3jJXXQv7o5CodtGw1";
+
 const kCardColor = Color.fromRGBO(61, 60, 62, .8);
 
 const kHeadingTextStyle = TextStyle(
@@ -63,6 +65,10 @@ const Map<String, Map<String, dynamic>> kApplianceList = {
   "ac": {
     "name": "Light Buld",
     "icon": Icons.ac_unit
+  },
+  "Others": {
+    "name": "Others",
+    "icon": FontAwesomeIcons.plug
   }
 };
 

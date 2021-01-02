@@ -7,8 +7,8 @@ class DeviceComponent {
   String name;
   String description;
   String type;
-  final int gpio;
-  final bool isInput;
+  int gpio;
+  bool isInput;
   bool isFavorite;
   bool isActive;
 
@@ -152,13 +152,57 @@ class Devices with ChangeNotifier {
     }
   }
 
+  Future<void> createDevice(device) async {
+    
+    try {
+      final tempComponent = [];
+      device["component"].forEach((component) {
+        tempComponent.add({
+          "name": component.name,
+          "description": component.description,
+          "type": component.type,
+          "gpio": component.gpio,
+          "is_input": component.isInput,
+          "is_favorite": component.isFavorite,
+          "is_active": component.isActive
+        });
+      });
+
+      final deviceSnapshot = await _firestore.collection("devices").add({
+        "name": device["name"],
+        "description": device["description"],
+        "is_favorite": device["is_favorite"],
+        "is_active": device["is_active"],
+        "room": device["room"],
+        "user": device["user"],
+        "component": tempComponent,
+      });
+
+      final newDevice = Device(
+        id: deviceSnapshot.id,
+        name: device["name"],
+        description: device["description"],
+        isFavorite: device["is_favorite"],
+        isActive: device["is_active"],
+        room: device["room"],
+        user: device["user"],
+        component: device["component"],
+      );
+
+      _devices.add(newDevice);
+
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
   Future<void> updateDevice(String id, newDevice) async {
     final deviceIndex = _devices.indexWhere((device) => device.id == id);
     if (deviceIndex >= 0) {
       try {
-
         final tempComponent = [];
-        newDevice["component"].forEach((component){
+        newDevice["component"].forEach((component) {
           tempComponent.add({
             "name": component.name,
             "description": component.description,
@@ -198,26 +242,4 @@ class Devices with ChangeNotifier {
       print('...');
     }
   }
-
-  // Future<void> deleteProduct(String id) async {
-  //   final url =
-  //       'https://flutter-app-47e55.firebaseio.com/products/$id.json?auth=$authToken';
-  //   final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
-  //   var existingProduct = _items[existingProductIndex];
-
-  //   //remove localy
-  //   _items.removeAt(existingProductIndex);
-  //   notifyListeners();
-
-  //   ///remove from server
-  //   final response = await http.delete(url);
-
-  //   if (response.statusCode >= 400) {
-  //     _items.insert(existingProductIndex, existingProduct);
-  //     notifyListeners();
-  //     throw HttpException('Could not delete product');
-  //   }
-
-  //   existingProduct = null;
-  // }
 }

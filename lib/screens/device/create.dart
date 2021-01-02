@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import '../../providers/auth.dart';
 import '../../widgets/device_item_card.dart';
 import '../../providers/rooms.dart';
 import '../../providers/devices.dart';
@@ -9,14 +10,13 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import '../../containts.dart';
 
 String _id;
-  String _name;
-  String _description;
-  List<DeviceComponent> _component;
-  List<String> _user;
-  List<String> _room;
-  bool _is_favorite;
-  bool _is_active;
-
+String _name;
+String _description;
+List<DeviceComponent> _component;
+List<String> _user;
+List<String> _room;
+bool _is_favorite;
+bool _is_active;
 
 class CreateDeviceScreen extends StatelessWidget {
   static const routeName = 'device/create';
@@ -44,7 +44,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  
   List<Room> rooms;
 
   @override
@@ -63,6 +62,15 @@ class _MainPageState extends State<MainPage> {
       _room = device.room;
       _is_favorite = device.isFavorite;
       _is_active = device.isActive;
+    } else {
+      _id = null;
+      _name = null;
+      _description = null;
+      _user = [];
+      _room = [];
+      _is_favorite = false;
+      _is_active = true;
+      _component = [];
     }
     super.initState();
   }
@@ -77,9 +85,16 @@ class _MainPageState extends State<MainPage> {
   _updatedDeviceComponent(BuildContext context, int index) => showDialog(
         context: context,
         builder: (context) {
-          return UpdateDeviceComponent(index);
+          return UpdateDeviceComponent(index, context);
         },
-      );
+      ).then((value) => {setState(() {})});
+
+  _addDeviceComponent(BuildContext context) => showDialog(
+        context: context,
+        builder: (context) {
+          return UpdateDeviceComponent(null, context);
+        },
+      ).then((value) => {setState(() {})});
 
   Widget _buildName() {
     return TextFormField(
@@ -150,10 +165,22 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget _buildAppliance() {
+    final userProfile = Provider.of<Auth>(context, listen: false).userProfile;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Appliances', style: kHeadingLableTextStyle),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Appliances', style: kHeadingLableTextStyle),
+            if (userProfile.uid == kAdminUID)
+              IconButton(
+                  icon: Icon(FontAwesomeIcons.plus),
+                  onPressed: () {
+                    _addDeviceComponent(context);
+                  }),
+          ],
+        ),
         SizedBox(height: 20),
         Container(
           height: _component.length > 3 ? 220 : 110,
@@ -170,9 +197,6 @@ class _MainPageState extends State<MainPage> {
                 isActive: false,
                 onTap: () async {
                   _updatedDeviceComponent(context, index);
-                  // await devicesData.toggleActiveStatus(devicesData.devices[index].id);
-                  // Navigator.of(context).pushNamed(CreateDeviceScreen.routeName,
-                  //     arguments: devicesData.devices[index].id);
                 },
               );
             },
@@ -286,7 +310,8 @@ class _MainPageState extends State<MainPage> {
                         ),
                       );
                       if (_id == null) {
-                        //TODO : Add new device
+                        await Provider.of<Devices>(context, listen: false)
+                            .createDevice(device);
                       } else {
                         await Provider.of<Devices>(context, listen: false)
                             .updateDevice(_id, device);
@@ -316,10 +341,10 @@ class _MainPageState extends State<MainPage> {
 }
 
 class UpdateDeviceComponent extends StatefulWidget {
+  UpdateDeviceComponent(this.deviceComponentIndex, this.ctx);
+  final int deviceComponentIndex;
+  final BuildContext ctx;
 
-  UpdateDeviceComponent(this.deviceComponentIndex);
-  final int deviceComponentIndex; 
-  
   @override
   _UpdateDeviceComponentState createState() => _UpdateDeviceComponentState();
 }
@@ -332,23 +357,45 @@ class _UpdateDeviceComponentState extends State<UpdateDeviceComponent> {
   final _typeDeviceComponentFocusNode = FocusNode();
   final _is_favoriteDeviceComponentFocusNode = FocusNode();
   final _is_activeDeviceComponentFocusNode = FocusNode();
-
-
+  DeviceComponent newComponent = DeviceComponent(
+    name: "",
+    description: "",
+    type: "Others",
+    gpio: 4,
+    isInput: true,
+    isFavorite: false,
+    isActive: true,
+  );
   Widget _buildName() {
     return TextFormField(
       decoration: kTextFieldStyle.copyWith(labelText: "Name"),
-      initialValue: _component[widget.deviceComponentIndex].name,
+      initialValue: widget.deviceComponentIndex == null
+          ? ""
+          : _component[widget.deviceComponentIndex].name,
       keyboardType: TextInputType.name,
       textInputAction: TextInputAction.next,
       focusNode: _nameDeviceComponentFocusNode,
       onFieldSubmitted: (_value) {
-        FocusScope.of(context).requestFocus(_descriptionDeviceComponentFocusNode);
+        FocusScope.of(context)
+            .requestFocus(_descriptionDeviceComponentFocusNode);
       },
       validator: (String value) {
         if (value.isEmpty) {
           return 'Name is Required';
         }
-        _component[widget.deviceComponentIndex].name = value;
+        if (widget.deviceComponentIndex == null) {
+          newComponent = DeviceComponent(
+            name: value,
+            description: newComponent.description,
+            type: newComponent.type,
+            gpio: newComponent.gpio,
+            isInput: newComponent.isInput,
+            isFavorite: newComponent.isFavorite,
+            isActive: newComponent.isActive,
+          );
+        } else {
+          _component[widget.deviceComponentIndex].name = value;
+        }
         return null;
       },
     );
@@ -360,23 +407,77 @@ class _UpdateDeviceComponentState extends State<UpdateDeviceComponent> {
       keyboardType: TextInputType.text,
       minLines: 2,
       maxLines: 5,
-      initialValue: _component[widget.deviceComponentIndex].description,
+      initialValue: widget.deviceComponentIndex == null
+          ? ""
+          : _component[widget.deviceComponentIndex].description,
       textInputAction: TextInputAction.next,
       focusNode: _descriptionDeviceComponentFocusNode,
       onFieldSubmitted: (_value) {
         FocusScope.of(context).requestFocus(_typeDeviceComponentFocusNode);
       },
       validator: (String value) {
-        _component[widget.deviceComponentIndex].description = value;
+        if (widget.deviceComponentIndex == null) {
+          newComponent = DeviceComponent(
+            name: newComponent.name,
+            description: value,
+            type: newComponent.type,
+            gpio: newComponent.gpio,
+            isInput: newComponent.isInput,
+            isFavorite: newComponent.isFavorite,
+            isActive: newComponent.isActive,
+          );
+        } else {
+          _component[widget.deviceComponentIndex].description = value;
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildGpio() {
+    final userProfile = Provider.of<Auth>(context, listen: false).userProfile;
+    if(userProfile.uid != kAdminUID){
+      return Text("");
+    }
+
+    return TextFormField(
+      decoration: kTextFieldStyle.copyWith(labelText: "GPIO"),
+      keyboardType: TextInputType.number,
+      initialValue: widget.deviceComponentIndex == null
+          ? "22"
+          : _component[widget.deviceComponentIndex].gpio.toString(),
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (_value) {},
+      validator: (String value) {
+        if (int.tryParse(value) == null) {
+          return "Must be an integer";
+        }
+
+        if (widget.deviceComponentIndex == null) {
+          newComponent = DeviceComponent(
+            name: newComponent.name,
+            description: newComponent.description,
+            type: newComponent.type,
+            gpio: int.parse(value),
+            isInput: newComponent.isInput,
+            isFavorite: newComponent.isFavorite,
+            isActive: newComponent.isActive,
+          );
+        } else {
+          _component[widget.deviceComponentIndex].gpio = int.parse(value);
+        }
         return null;
       },
     );
   }
 
   Widget _buildType() {
+    
     return DropdownButtonFormField(
       decoration: kTextFieldStyle.copyWith(labelText: "Type"),
-      value:  _component[widget.deviceComponentIndex].type,
+      value: widget.deviceComponentIndex == null
+          ? null
+          : _component[widget.deviceComponentIndex].type,
       items: kAppliance.map<DropdownMenuItem<String>>((String _value) {
         return DropdownMenuItem<String>(
           value: _value,
@@ -384,14 +485,27 @@ class _UpdateDeviceComponentState extends State<UpdateDeviceComponent> {
         );
       }).toList(),
       onChanged: (_value) {
-        FocusScope.of(context).requestFocus(_is_favoriteDeviceComponentFocusNode);
+        FocusScope.of(context)
+            .requestFocus(_is_favoriteDeviceComponentFocusNode);
       },
       focusNode: _typeDeviceComponentFocusNode,
       validator: (String value) {
         if (value == null) {
           return 'Type is Required';
         }
-         _component[widget.deviceComponentIndex].type = value;
+        if (widget.deviceComponentIndex == null) {
+          newComponent = DeviceComponent(
+            name: newComponent.name,
+            description: newComponent.description,
+            type: value,
+            gpio: newComponent.gpio,
+            isInput: newComponent.isInput,
+            isFavorite: newComponent.isFavorite,
+            isActive: newComponent.isActive,
+          );
+        } else {
+          _component[widget.deviceComponentIndex].type = value;
+        }
         return null;
       },
     );
@@ -408,12 +522,68 @@ class _UpdateDeviceComponentState extends State<UpdateDeviceComponent> {
         ),
         Switch.adaptive(
           focusNode: _is_favoriteDeviceComponentFocusNode,
-          value: _component[widget.deviceComponentIndex].isFavorite,
+          value: widget.deviceComponentIndex == null
+              ? false
+              : _component[widget.deviceComponentIndex].isFavorite,
           activeColor: Colors.green,
           onChanged: (bool isSwitched) {
-            FocusScope.of(context).requestFocus(_is_activeDeviceComponentFocusNode);
+            FocusScope.of(context)
+                .requestFocus(_is_activeDeviceComponentFocusNode);
             setState(() {
-              _component[widget.deviceComponentIndex].isFavorite = isSwitched;
+              if (widget.deviceComponentIndex == null) {
+                newComponent = DeviceComponent(
+                  name: newComponent.name,
+                  description: newComponent.description,
+                  type: newComponent.type,
+                  gpio: newComponent.gpio,
+                  isInput: newComponent.isInput,
+                  isFavorite: isSwitched,
+                  isActive: newComponent.isActive,
+                );
+              } else {
+                _component[widget.deviceComponentIndex].isFavorite = isSwitched;
+              }
+            });
+          },
+        )
+      ],
+    );
+  }
+
+  Widget _buildInput() {
+    final userProfile = Provider.of<Auth>(context, listen: false).userProfile;
+    if(userProfile.uid != kAdminUID){
+      return Text("");
+    }
+    
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          "Input",
+          style: kHeadingLableTextStyle,
+        ),
+        Switch.adaptive(
+          value: widget.deviceComponentIndex == null
+              ? false
+              : _component[widget.deviceComponentIndex].isInput,
+          activeColor: Colors.green,
+          onChanged: (bool isSwitched) {
+            setState(() {
+              if (widget.deviceComponentIndex == null) {
+                newComponent = DeviceComponent(
+                  name: newComponent.name,
+                  description: newComponent.description,
+                  type: newComponent.type,
+                  gpio: newComponent.gpio,
+                  isInput: isSwitched,
+                  isFavorite: newComponent.isFavorite,
+                  isActive: newComponent.isActive,
+                );
+              } else {
+                _component[widget.deviceComponentIndex].isInput = isSwitched;
+              }
             });
           },
         )
@@ -432,11 +602,25 @@ class _UpdateDeviceComponentState extends State<UpdateDeviceComponent> {
         ),
         Switch.adaptive(
           focusNode: _is_activeDeviceComponentFocusNode,
-          value: _component[widget.deviceComponentIndex].isActive,
+          value: widget.deviceComponentIndex == null
+              ? false
+              : _component[widget.deviceComponentIndex].isActive,
           activeColor: Colors.green,
           onChanged: (bool isSwitched) {
             setState(() {
-              _component[widget.deviceComponentIndex].isActive = isSwitched;
+              if (widget.deviceComponentIndex == null) {
+                newComponent = DeviceComponent(
+                  name: newComponent.name,
+                  description: newComponent.description,
+                  type: newComponent.type,
+                  gpio: newComponent.gpio,
+                  isInput: isSwitched,
+                  isFavorite: newComponent.isFavorite,
+                  isActive: newComponent.isActive,
+                );
+              } else {
+                _component[widget.deviceComponentIndex].isActive = isSwitched;
+              }
             });
           },
         )
@@ -448,10 +632,13 @@ class _UpdateDeviceComponentState extends State<UpdateDeviceComponent> {
   void dispose() {
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Update Appliance"),
+      title: widget.deviceComponentIndex == null
+          ? Text("Create Appliance")
+          : Text("Update Appliance"),
       content: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -467,6 +654,8 @@ class _UpdateDeviceComponentState extends State<UpdateDeviceComponent> {
                       _buildName(),
                       _buildDescription(),
                       _buildType(),
+                      _buildGpio(),
+                      _buildInput(),
                       _buildFavorite(),
                       _buildActive(),
                     ],
@@ -479,12 +668,10 @@ class _UpdateDeviceComponentState extends State<UpdateDeviceComponent> {
                         return;
                       }
                       _formDeviceComponentKey.currentState.save();
-                      Scaffold.of(context).hideCurrentSnackBar();
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text('Success',
-                              style: kHeadingLableTextStyle.copyWith(
-                                  color: Colors.white)),
-                          backgroundColor: Colors.green));
+                      //create new device
+                      if (widget.deviceComponentIndex == null) {
+                        _component.add(newComponent);
+                      }
                       Navigator.of(context).pop();
                     }),
               ],

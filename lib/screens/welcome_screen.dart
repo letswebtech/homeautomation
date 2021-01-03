@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import '../screens/device/component.dart';
 import '../providers/rooms.dart';
 import '../screens/room/create.dart';
 import '../providers/auth.dart';
@@ -10,6 +11,7 @@ import '../containts.dart';
 import '../widgets/action_button_card.dart';
 import '../widgets/device_item_card.dart';
 import '../providers/devices.dart';
+import 'room/componentList.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static const routeName = '/home';
@@ -83,16 +85,21 @@ class WelcomeScreen extends StatelessWidget {
                                             devicesData.deviceComponents.length,
                                         itemBuilder: (_, int index) {
                                           return DeviceItemCard(
-                                            key: Key(devicesData
-                                                .deviceComponents[index].name
-                                                .toString()),
-                                            icon: FontAwesomeIcons.hdd,
+                                            icon: kApplianceList[devicesData
+                                                .deviceComponents[index].type
+                                                .toString()]["icon"],
                                             roomName: devicesData
                                                 .deviceComponents[index].name
                                                 .toString(),
                                             statusMessage: "off",
                                             isActive: false,
-                                            onTap: () async {},
+                                            onTap: () async {
+                                              Navigator.of(context).pushNamed(
+                                                  CreateDeviceComponentScreen
+                                                      .routeName,
+                                                  arguments: devicesData
+                                                      .deviceComponents[index]);
+                                            },
                                           );
                                         },
                                       );
@@ -131,7 +138,14 @@ class WelcomeScreen extends StatelessWidget {
                                             .toString(),
                                         statusMessage: "off",
                                         isActive: false,
-                                        onTap: () async {},
+                                        onTap: () async {
+                                          Navigator.of(context).pushNamed(
+                                              ComponentListScreen.routeName,
+                                              arguments: {
+                                                "id": roomsData.rooms[index].id,
+                                                "type": "room"
+                                              });
+                                        },
                                         onLongPress: () async {
                                           Navigator.of(context).pushNamed(
                                               CreateRoomScreen.routeName,
@@ -177,7 +191,12 @@ class WelcomeScreen extends StatelessWidget {
                                             .toString(),
                                         statusMessage: "off",
                                         isActive: false,
-                                        onTap: () async {},
+                                        onTap: () async {
+                                          Navigator.of(context).pushNamed(ComponentListScreen.routeName, arguments: {
+                                          "id": devicesData.devices[index].id,
+                                          "type": "device"
+                                        },);
+                                        },
                                         onLongPress: () async {
                                           Navigator.of(context).pushNamed(
                                             CreateDeviceScreen.routeName,

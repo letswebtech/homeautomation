@@ -8,6 +8,7 @@ import '../containts.dart';
 import '../widgets/action_button_card.dart';
 import '../widgets/device_item_card.dart';
 import '../providers/devices.dart';
+import '../screens/room/componentList.dart';
 
 class DeviceScreen extends StatelessWidget {
   static const routeName = '/devices';
@@ -122,7 +123,12 @@ class DeviceScreen extends StatelessWidget {
                                             .toString(),
                                         statusMessage: "off",
                                         isActive: false,
-                                        onTap: () async {},
+                                        onTap: () async {
+                                          Navigator.of(context).pushNamed(ComponentListScreen.routeName, arguments: {
+                                          "id": devicesData.devices[index].id,
+                                          "type": "device"
+                                        },);
+                                        },
                                         onLongPress: () async {
                                           Navigator.of(context).pushNamed(
                                             CreateDeviceScreen.routeName,

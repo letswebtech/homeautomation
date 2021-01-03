@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import './screens/room/componentList.dart';
+import './screens/device/component.dart';
 import './screens/device/create.dart';
 import './providers/devices.dart';
 import './screens/room/create.dart';
@@ -68,6 +70,8 @@ class SmartHome extends StatelessWidget {
             AuthScreen.routeName: (ctx) => AuthScreen(),
             CreateRoomScreen.routeName: (ctx) => CreateRoomScreen(),
             CreateDeviceScreen.routeName: (ctx) => CreateDeviceScreen(),
+            CreateDeviceComponentScreen.routeName: (ctx) => CreateDeviceComponentScreen(),
+            ComponentListScreen.routeName: (ctx) => ComponentListScreen(),
           },
         ),
       ),

@@ -11,10 +11,7 @@ class AutomationScreen extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           child: Column(
             children: [
-              Text('AUTOMATION SCREEN'),
-              Text('HELLO WORLD'),
-              Text('HELLO WORLD'),
-              Text('HELLO WORLD'),
+             
             ],
           ),
         ),

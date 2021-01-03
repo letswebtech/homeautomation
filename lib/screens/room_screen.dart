@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../screens/room/componentList.dart';
 import '../screens/room/create.dart';
 
 import '../containts.dart';
@@ -70,6 +71,10 @@ class RoomScreen extends StatelessWidget {
                                     statusMessage: "off",
                                     isActive: false,
                                     onTap: () async {
+                                      Navigator.of(context).pushNamed(ComponentListScreen.routeName, arguments: {
+                                        "id": roomsData.rooms[index].id,
+                                        "type": "room"
+                                      });
                                     },
                                     onLongPress: () async {
                                       Navigator.of(context).pushNamed(CreateRoomScreen.routeName, arguments: roomsData.rooms[index].id);

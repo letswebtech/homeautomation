@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'devices.dart';
+
 final _firestore = FirebaseFirestore.instance;
 
 enum RoomType {
@@ -114,6 +116,12 @@ class Rooms with ChangeNotifier {
 
   Rooms(this.userUID, this._rooms);
 
+  List<DeviceComponent> _componentList = [];
+
+  List<DeviceComponent> get deviceComponents {
+    return [..._componentList];
+  }
+
   List<Room> _rooms = [];
 
   List<Room> get rooms {
@@ -130,7 +138,10 @@ class Rooms with ChangeNotifier {
 
   Future<void> fetchAndSetRooms() async {
     try {
-      final extractData = await _firestore.collection("rooms").where("user_uid", isEqualTo: userUID).get();
+      final extractData = await _firestore
+          .collection("rooms")
+          .where("user_uid", isEqualTo: userUID)
+          .get();
 
       final List<Room> loadingRooms = [];
       extractData.docs.forEach((roomSnapshot) {
@@ -155,6 +166,49 @@ class Rooms with ChangeNotifier {
       _rooms = loadingRooms;
       notifyListeners();
     } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> fetchAndSetComponents([roomID]) async {
+    try {
+      //final extractData = await _firestore.collection("devices").get();
+      final extractData = await _firestore
+          .collection("devices")
+          .where("user", arrayContainsAny: [userUID]).get();
+
+      final List<DeviceComponent> loadingComponentList = [];
+
+      extractData.docs.forEach((deviceSnapshot) {
+        final device = deviceSnapshot.data();
+
+        int roomFound;
+        if(roomID != null){
+          roomFound = device["room"].indexWhere((room) => room == roomID);
+        }else{
+          roomFound = 0;
+        }
+        
+        if (roomFound >= 0) {
+          device["component"].forEach((deviceComponent) {
+            loadingComponentList.add(DeviceComponent(
+              deviceID: deviceSnapshot.id,
+              name: deviceComponent["name"],
+              description: deviceComponent["description"],
+              type: deviceComponent["type"],
+              gpio: deviceComponent["gpio"],
+              isInput: deviceComponent["is_input"],
+              isActive: deviceComponent["is_active"],
+              isFavorite: deviceComponent["is_favorite"],
+            ));
+          });
+        }
+      });
+
+      _componentList = loadingComponentList;
+      notifyListeners();
+    } catch (error) {
+      print(error);
       throw error;
     }
   }

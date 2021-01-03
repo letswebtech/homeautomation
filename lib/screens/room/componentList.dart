@@ -20,12 +20,12 @@ ListType listType;
 class ComponentListScreen extends StatelessWidget {
   static const routeName = '/rooms/component/list';
 
-  Future<void> _refreshRooms(BuildContext context) async {
-    await Provider.of<Rooms>(context, listen: false).fetchAndSetRooms();
+  Future<void> _refreshRooms(BuildContext context, _id) async {
+    await Provider.of<Rooms>(context, listen: false).fetchAndSetComponents(_id);
   }
 
-  Future<void> _refreshDevices(BuildContext context) async {
-    await Provider.of<Devices>(context, listen: false).fetchAndSetDevices();
+  Future<void> _refreshDevices(BuildContext context, _id) async {
+    await Provider.of<Devices>(context, listen: false).fetchAndSetComponents(_id);
   }
 
   @override
@@ -65,7 +65,7 @@ class ComponentListScreen extends StatelessWidget {
                 height: queryData.size.width - 20,
                 child: Expanded(
                   child: FutureBuilder(
-                    future: listType == ListType.Mutiple ? _refreshRooms(context): _refreshDevices(context),
+                    future: listType == ListType.Mutiple ? _refreshRooms(context, roomData.id): _refreshDevices(context, deviceData.id),
                     builder: (ctx, snapshot) =>
                         snapshot.connectionState == ConnectionState.waiting
                             ? Center(
@@ -74,8 +74,38 @@ class ComponentListScreen extends StatelessWidget {
                             : RefreshIndicator(
                                 color: Colors.white,
                                 backgroundColor: Colors.white,
-                                onRefresh: () => listType == ListType.Mutiple ? _refreshRooms(context): _refreshDevices(context),
-                                child: Consumer<Devices>(
+                                onRefresh: () => listType == ListType.Mutiple ? _refreshRooms(context, roomData.id): _refreshDevices(context, deviceData.id),
+                                child: listType == ListType.Mutiple ? Consumer<Rooms>(
+                                  builder: (ctx, devicesData, _) {
+                                    return GridView.builder(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          devicesData.deviceComponents.length,
+                                      itemBuilder: (_, int index) {
+                                        return DeviceItemCard(
+                                          icon: kApplianceList[devicesData
+                                              .deviceComponents[index].type
+                                              .toString()]["icon"],
+                                          roomName: devicesData
+                                              .deviceComponents[index].name
+                                              .toString(),
+                                          statusMessage: "off",
+                                          isActive: false,
+                                          onTap: () async {
+                                            Navigator.of(context).pushNamed(
+                                                CreateDeviceComponentScreen
+                                                    .routeName,
+                                                arguments: devicesData
+                                                    .deviceComponents[index]);
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                                ) : Consumer<Devices>(
                                   builder: (ctx, devicesData, _) {
                                     return GridView.builder(
                                       gridDelegate:

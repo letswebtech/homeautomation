@@ -118,7 +118,7 @@ class Devices with ChangeNotifier {
     }
   }
 
-  Future<void> fetchAndSetComponents() async {
+  Future<void> fetchAndSetComponents([deviceID]) async {
     try {
       //final extractData = await _firestore.collection("devices").get();
       final extractData = await _firestore
@@ -130,18 +130,27 @@ class Devices with ChangeNotifier {
       extractData.docs.forEach((deviceSnapshot) {
         final device = deviceSnapshot.data();
 
-        device["component"].forEach((deviceComponent) {
-          loadingComponentList.add(DeviceComponent(
-            deviceID: deviceSnapshot.id,
-            name: deviceComponent["name"],
-            description: deviceComponent["description"],
-            type: deviceComponent["type"],
-            gpio: deviceComponent["gpio"],
-            isInput: deviceComponent["is_input"],
-            isActive: deviceComponent["is_active"],
-            isFavorite: deviceComponent["is_favorite"],
-          ));
-        });
+        bool deviceFound;
+        if (deviceID != null) {
+          deviceFound = deviceSnapshot.id == deviceID ? true : false;
+        } else {
+          deviceFound = true;
+        }
+
+        if (deviceFound) {
+          device["component"].forEach((deviceComponent) {
+            loadingComponentList.add(DeviceComponent(
+              deviceID: deviceSnapshot.id,
+              name: deviceComponent["name"],
+              description: deviceComponent["description"],
+              type: deviceComponent["type"],
+              gpio: deviceComponent["gpio"],
+              isInput: deviceComponent["is_input"],
+              isActive: deviceComponent["is_active"],
+              isFavorite: deviceComponent["is_favorite"],
+            ));
+          });
+        }
       });
 
       _componentList = loadingComponentList;

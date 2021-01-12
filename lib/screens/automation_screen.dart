@@ -11,17 +11,7 @@ class AutomationScreen extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         child: Column(
-          children: [
-            DeviceItemCard(
-              icon: Icons.ac_unit,
-              roomName: "aswerd",
-              statusMessage: "off",
-              isActive: false,
-              onTap: () async {
-                
-              },
-            )
-          ],
+          children: [],
         ),
       ),
     );

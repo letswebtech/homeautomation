@@ -42,50 +42,48 @@ class RoomScreen extends StatelessWidget {
             ),
             Container(
               height: queryData.size.width - 20,
-              child: Expanded(
-                child: FutureBuilder(
-                  future: _refreshRooms(context),
-                  builder: (ctx, snapshot) => snapshot.connectionState ==
-                          ConnectionState.waiting
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : RefreshIndicator(
-                          color: Colors.white,
-                          backgroundColor: Colors.white,
-                          onRefresh: () => _refreshRooms(context),
-                          child: Consumer<Rooms>(
-                            builder: (ctx, roomsData, _) {
-                              return GridView.builder(
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: roomsData.rooms.length,
-                                itemBuilder: (_, int index) {
-                                  return DeviceItemCard(
-                                    imageIcon: roomsData.rooms[index].imageIcon,
-                                    icon: roomsData.rooms[index].icon,
-                                    roomName:
-                                        roomsData.rooms[index].name.toString(),
-                                    statusMessage: "off",
-                                    isActive: false,
-                                    onTap: () async {
-                                      Navigator.of(context).pushNamed(ComponentListScreen.routeName, arguments: {
-                                        "id": roomsData.rooms[index].id,
-                                        "type": "room"
-                                      });
-                                    },
-                                    onLongPress: () async {
-                                      Navigator.of(context).pushNamed(CreateRoomScreen.routeName, arguments: roomsData.rooms[index].id);
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                          ),
+              child: FutureBuilder(
+                future: _refreshRooms(context),
+                builder: (ctx, snapshot) => snapshot.connectionState ==
+                        ConnectionState.waiting
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : RefreshIndicator(
+                        color: Colors.white,
+                        backgroundColor: Colors.white,
+                        onRefresh: () => _refreshRooms(context),
+                        child: Consumer<Rooms>(
+                          builder: (ctx, roomsData, _) {
+                            return GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: roomsData.rooms.length,
+                              itemBuilder: (_, int index) {
+                                return DeviceItemCard(
+                                  imageIcon: roomsData.rooms[index].imageIcon,
+                                  icon: roomsData.rooms[index].icon,
+                                  roomName:
+                                      roomsData.rooms[index].name.toString(),
+                                  statusMessage: "off",
+                                  isActive: false,
+                                  onTap: () async {
+                                    Navigator.of(context).pushNamed(ComponentListScreen.routeName, arguments: {
+                                      "id": roomsData.rooms[index].id,
+                                      "type": "room"
+                                    });
+                                  },
+                                  onLongPress: () async {
+                                    Navigator.of(context).pushNamed(CreateRoomScreen.routeName, arguments: roomsData.rooms[index].id);
+                                  },
+                                );
+                              },
+                            );
+                          },
                         ),
-                ),
+                      ),
               ),
             ),
           ],

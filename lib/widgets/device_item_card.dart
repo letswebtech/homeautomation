@@ -28,55 +28,53 @@ class DeviceItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        onDoubleTap: onDoubleTap,
-        onLongPress: onLongPress,
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-          padding: EdgeInsets.all(6),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: isActive ? Colors.white : kCardColor,
-              boxShadow: [
-                BoxShadow(
-                  offset: Offset(0.0, .5), //(x,y)
-                  blurRadius: 1,
-                ),
-              ]),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (imageIcon != null)
-                ImageIcon(
-                  imageIcon,
-                  color: isActive ? kActiveIconColor : Colors.blue,
-                  size: isActive ? 50 : 35,
-                ),
-              if (imageIcon == null)
-                Icon(
-                  icon,
-                  color: isActive ? kActiveIconColor : Colors.blue,
-                  size: isActive ? 50 : 35,
-                ),
-              Text(
-                "$roomName",
-                style: TextStyle(
-                  color: isActive ? Colors.black : Colors.white,
-                  fontSize: 15,
-                ),
+    return GestureDetector(
+      onTap: onTap,
+      onDoubleTap: onDoubleTap,
+      onLongPress: onLongPress,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+        padding: EdgeInsets.all(6),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: isActive ? Colors.white : kCardColor,
+            boxShadow: [
+              BoxShadow(
+                offset: Offset(0.0, .5), //(x,y)
+                blurRadius: 1,
               ),
-              Text(
-                "$statusMessage",
-                style: TextStyle(
-                  color: Color.fromRGBO(189, 189, 189, .8),
-                  fontSize: 14,
-                ),
+            ]),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (imageIcon != null)
+              ImageIcon(
+                imageIcon,
+                color: isActive ? kActiveIconColor : Colors.blue,
+                size: isActive ? 50 : 35,
               ),
-            ],
-          ),
+            if (imageIcon == null)
+              Icon(
+                icon,
+                color: isActive ? kActiveIconColor : Colors.blue,
+                size: isActive ? 50 : 35,
+              ),
+            Text(
+              "$roomName",
+              style: TextStyle(
+                color: isActive ? Colors.black : Colors.white,
+                fontSize: 15,
+              ),
+            ),
+            Text(
+              "$statusMessage",
+              style: TextStyle(
+                color: Color.fromRGBO(189, 189, 189, .8),
+                fontSize: 14,
+              ),
+            ),
+          ],
         ),
       ),
     );

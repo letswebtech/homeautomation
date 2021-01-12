@@ -93,56 +93,54 @@ class DeviceScreen extends StatelessWidget {
             ),
             Container(
               height: queryData.size.width - 20,
-              child: Expanded(
-                child: FutureBuilder(
-                  future: _refreshDevices(context),
-                  builder: (ctx, snapshot) =>
-                      snapshot.connectionState == ConnectionState.waiting
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : RefreshIndicator(
-                              color: Colors.white,
-                              backgroundColor: Colors.white,
-                              onRefresh: () => _refreshDevices(context),
-                              child: Consumer<Devices>(
-                                builder: (ctx, devicesData, _) {
-                                  return GridView.builder(
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3),
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: devicesData.devices.length,
-                                    itemBuilder: (_, int index) {
-                                      return DeviceItemCard(
-                                        key: Key(devicesData.devices[index].id
-                                            .toString()),
-                                        icon: FontAwesomeIcons.hdd,
-                                        roomName: devicesData
-                                            .devices[index].name
-                                            .toString(),
-                                        statusMessage: "off",
-                                        isActive: false,
-                                        onTap: () async {
-                                          Navigator.of(context).pushNamed(ComponentListScreen.routeName, arguments: {
-                                          "id": devicesData.devices[index].id,
-                                          "type": "device"
-                                        },);
-                                        },
-                                        onLongPress: () async {
-                                          Navigator.of(context).pushNamed(
-                                            CreateDeviceScreen.routeName,
-                                            arguments:
-                                                devicesData.devices[index].id,
-                                          );
-                                        },
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
+              child: FutureBuilder(
+                future: _refreshDevices(context),
+                builder: (ctx, snapshot) =>
+                    snapshot.connectionState == ConnectionState.waiting
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : RefreshIndicator(
+                            color: Colors.white,
+                            backgroundColor: Colors.white,
+                            onRefresh: () => _refreshDevices(context),
+                            child: Consumer<Devices>(
+                              builder: (ctx, devicesData, _) {
+                                return GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: devicesData.devices.length,
+                                  itemBuilder: (_, int index) {
+                                    return DeviceItemCard(
+                                      key: Key(devicesData.devices[index].id
+                                          .toString()),
+                                      icon: FontAwesomeIcons.hdd,
+                                      roomName: devicesData
+                                          .devices[index].name
+                                          .toString(),
+                                      statusMessage: "off",
+                                      isActive: false,
+                                      onTap: () async {
+                                        Navigator.of(context).pushNamed(ComponentListScreen.routeName, arguments: {
+                                        "id": devicesData.devices[index].id,
+                                        "type": "device"
+                                      },);
+                                      },
+                                      onLongPress: () async {
+                                        Navigator.of(context).pushNamed(
+                                          CreateDeviceScreen.routeName,
+                                          arguments:
+                                              devicesData.devices[index].id,
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
                             ),
-                ),
+                          ),
               ),
             ),
           ],

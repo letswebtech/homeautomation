@@ -120,34 +120,27 @@ class Devices with ChangeNotifier {
 
   Future<void> fetchAndSetComponents([deviceID]) async {
     try {
-      //final extractData = await _firestore.collection("devices").get();
-      final extractData = await _firestore
-          .collection("devices")
-          .where("user", arrayContainsAny: [userUID]).get();
-
       final List<DeviceComponent> loadingComponentList = [];
 
-      extractData.docs.forEach((deviceSnapshot) {
-        final device = deviceSnapshot.data();
-
+      _devices.forEach((device) {
         bool deviceFound;
         if (deviceID != null) {
-          deviceFound = deviceSnapshot.id == deviceID ? true : false;
+          deviceFound = device.id == deviceID ? true : false;
         } else {
           deviceFound = true;
         }
 
         if (deviceFound) {
-          device["component"].forEach((deviceComponent) {
+          device.component.forEach((deviceComponent) {
             loadingComponentList.add(DeviceComponent(
-              deviceID: deviceSnapshot.id,
-              name: deviceComponent["name"],
-              description: deviceComponent["description"],
-              type: deviceComponent["type"],
-              gpio: deviceComponent["gpio"],
-              isInput: deviceComponent["is_input"],
-              isActive: deviceComponent["is_active"],
-              isFavorite: deviceComponent["is_favorite"],
+              deviceID: device.id,
+              name: deviceComponent.name,
+              description: deviceComponent.description,
+              type: deviceComponent.type,
+              gpio: deviceComponent.gpio,
+              isInput: deviceComponent.isInput,
+              isActive: deviceComponent.isActive,
+              isFavorite: deviceComponent.isFavorite,
             ));
           });
         }

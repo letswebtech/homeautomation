@@ -21,14 +21,8 @@ class WelcomeScreen extends StatelessWidget {
   Future<void> _refreshDevices(BuildContext context) async {
     final userProfile = Provider.of<Auth>(context, listen: false).userProfile;
     await Provider.of<Devices>(context, listen: false).fetchAndSetDevices();
-  }
-
-  Future<void> _refreshDeviceComponents(BuildContext context) async {
-    await Provider.of<Devices>(context, listen: false).fetchAndSetComponents();
-  }
-
-  Future<void> _refreshRooms(BuildContext context) async {
     await Provider.of<Rooms>(context, listen: false).fetchAndSetRooms();
+    await Provider.of<Devices>(context, listen: false).fetchAndSetComponents();
   }
 
   @override
@@ -63,7 +57,7 @@ class WelcomeScreen extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: FutureBuilder(
-                      future: _refreshDeviceComponents(context),
+                      future: _refreshDevices(context),
                       builder: (ctx, snapshot) =>
                           snapshot.connectionState == ConnectionState.waiting
                               ? Center(
@@ -72,8 +66,7 @@ class WelcomeScreen extends StatelessWidget {
                               : RefreshIndicator(
                                   color: Colors.white,
                                   backgroundColor: Colors.white,
-                                  onRefresh: () =>
-                                      _refreshDeviceComponents(context),
+                                  onRefresh: () => _refreshDevices(context),
                                   child: Consumer<Devices>(
                                     builder: (ctx, devicesData, _) {
                                       return GridView.builder(
@@ -111,7 +104,7 @@ class WelcomeScreen extends StatelessWidget {
                   Text("Rooms", style: kHeadingTextStyle2),
                   Expanded(
                     child: FutureBuilder(
-                      future: _refreshRooms(context),
+                      future: _refreshDevices(context),
                       builder: (ctx, snapshot) => snapshot.connectionState ==
                               ConnectionState.waiting
                           ? Center(
@@ -120,7 +113,7 @@ class WelcomeScreen extends StatelessWidget {
                           : RefreshIndicator(
                               color: Colors.white,
                               backgroundColor: Colors.white,
-                              onRefresh: () => _refreshRooms(context),
+                              onRefresh: () => _refreshDevices(context),
                               child: Consumer<Rooms>(
                                 builder: (ctx, roomsData, _) {
                                   return GridView.builder(
@@ -192,10 +185,14 @@ class WelcomeScreen extends StatelessWidget {
                                         statusMessage: "off",
                                         isActive: false,
                                         onTap: () async {
-                                          Navigator.of(context).pushNamed(ComponentListScreen.routeName, arguments: {
-                                          "id": devicesData.devices[index].id,
-                                          "type": "device"
-                                        },);
+                                          Navigator.of(context).pushNamed(
+                                            ComponentListScreen.routeName,
+                                            arguments: {
+                                              "id":
+                                                  devicesData.devices[index].id,
+                                              "type": "device"
+                                            },
+                                          );
                                         },
                                         onLongPress: () async {
                                           Navigator.of(context).pushNamed(

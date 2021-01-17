@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 const kAdminUID = "r9Yswny1FGZ3jJXXQv7o5CodtGw1";
 
-const kCardColor = Color.fromRGBO(61, 60, 62, .8);
+const kCardColor = Color.fromRGBO(61, 60, 62, .7);
 
 const kHeadingTextStyle = TextStyle(
   fontSize: 30,

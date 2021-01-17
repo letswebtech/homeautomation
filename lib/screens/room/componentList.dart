@@ -63,81 +63,79 @@ class ComponentListScreen extends StatelessWidget {
             children: [
               Container(
                 height: queryData.size.width - 20,
-                child: Expanded(
-                  child: FutureBuilder(
-                    future: listType == ListType.Mutiple ? _refreshRooms(context, roomData.id): _refreshDevices(context, deviceData.id),
-                    builder: (ctx, snapshot) =>
-                        snapshot.connectionState == ConnectionState.waiting
-                            ? Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : RefreshIndicator(
-                                color: Colors.white,
-                                backgroundColor: Colors.white,
-                                onRefresh: () => listType == ListType.Mutiple ? _refreshRooms(context, roomData.id): _refreshDevices(context, deviceData.id),
-                                child: listType == ListType.Mutiple ? Consumer<Rooms>(
-                                  builder: (ctx, devicesData, _) {
-                                    return GridView.builder(
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3),
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount:
-                                          devicesData.deviceComponents.length,
-                                      itemBuilder: (_, int index) {
-                                        return DeviceItemCard(
-                                          icon: kApplianceList[devicesData
-                                              .deviceComponents[index].type
-                                              .toString()]["icon"],
-                                          roomName: devicesData
-                                              .deviceComponents[index].name
-                                              .toString(),
-                                          statusMessage: "off",
-                                          isActive: false,
-                                          onTap: () async {
-                                            Navigator.of(context).pushNamed(
-                                                CreateDeviceComponentScreen
-                                                    .routeName,
-                                                arguments: devicesData
-                                                    .deviceComponents[index]);
-                                          },
-                                        );
-                                      },
-                                    );
-                                  },
-                                ) : Consumer<Devices>(
-                                  builder: (ctx, devicesData, _) {
-                                    return GridView.builder(
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3),
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount:
-                                          devicesData.deviceComponents.length,
-                                      itemBuilder: (_, int index) {
-                                        return DeviceItemCard(
-                                          icon: kApplianceList[devicesData
-                                              .deviceComponents[index].type
-                                              .toString()]["icon"],
-                                          roomName: devicesData
-                                              .deviceComponents[index].name
-                                              .toString(),
-                                          statusMessage: "off",
-                                          isActive: false,
-                                          onTap: () async {
-                                            Navigator.of(context).pushNamed(
-                                                CreateDeviceComponentScreen
-                                                    .routeName,
-                                                arguments: devicesData
-                                                    .deviceComponents[index]);
-                                          },
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
+                child: FutureBuilder(
+                  future: listType == ListType.Mutiple ? _refreshRooms(context, roomData.id): _refreshDevices(context, deviceData.id),
+                  builder: (ctx, snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : RefreshIndicator(
+                              color: Colors.white,
+                              backgroundColor: Colors.white,
+                              onRefresh: () => listType == ListType.Mutiple ? _refreshRooms(context, roomData.id): _refreshDevices(context, deviceData.id),
+                              child: listType == ListType.Mutiple ? Consumer<Rooms>(
+                                builder: (ctx, devicesData, _) {
+                                  return GridView.builder(
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount:
+                                        devicesData.deviceComponents.length,
+                                    itemBuilder: (_, int index) {
+                                      return DeviceItemCard(
+                                        icon: kApplianceList[devicesData
+                                            .deviceComponents[index].type
+                                            .toString()]["icon"],
+                                        roomName: devicesData
+                                            .deviceComponents[index].name
+                                            .toString(),
+                                        statusMessage: "off",
+                                        isActive: false,
+                                        onTap: () async {
+                                          Navigator.of(context).pushNamed(
+                                              CreateDeviceComponentScreen
+                                                  .routeName,
+                                              arguments: devicesData
+                                                  .deviceComponents[index]);
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
+                              ) : Consumer<Devices>(
+                                builder: (ctx, devicesData, _) {
+                                  return GridView.builder(
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount:
+                                        devicesData.deviceComponents.length,
+                                    itemBuilder: (_, int index) {
+                                      return DeviceItemCard(
+                                        icon: kApplianceList[devicesData
+                                            .deviceComponents[index].type
+                                            .toString()]["icon"],
+                                        roomName: devicesData
+                                            .deviceComponents[index].name
+                                            .toString(),
+                                        statusMessage: "off",
+                                        isActive: false,
+                                        onTap: () async {
+                                          Navigator.of(context).pushNamed(
+                                              CreateDeviceComponentScreen
+                                                  .routeName,
+                                              arguments: devicesData
+                                                  .deviceComponents[index]);
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
                               ),
-                  ),
+                            ),
                 ),
               ),
             ],

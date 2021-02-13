@@ -1,0 +1,29 @@
+1. MOBILE 
+-> will connect to a room on server
+
+//getAndFech deviceStatus
+-> deviceStatusRequest (emit) 
+
+//get current deviceStatus
+-> deviceStatusResponse (on) 
+
+//updateDeviceStatus 
+-> updateDeviceStatusRequest (emit)
+
+
+2. SOCKET SERVER
+-> create room for device, where device and mobile can connect
+-> deviceStatusRequest (on)
+    ->deviceStatusRequest (emit)
+-> deviceStatusResponse (on)
+    ->deviceStatusResponse (emit)    
+-> updateDeviceStatusRequest (on)
+    ->updateDeviceStatusRequest(emit)
+
+3. DEVICE
+-> will connect to a room on server
+-> deviceStatusRequest (on)
+    ->deviceStatusResponse (emit)
+-> updateDeviceStatusRequest (on)
+    ->deviceStatusResponse(emit)
+   

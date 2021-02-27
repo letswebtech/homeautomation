@@ -69,7 +69,7 @@ class DeviceItemCard extends StatelessWidget {
             ),
             if(status != null)
               Icon(
-                FontAwesomeIcons.dotCircle,
+                FontAwesomeIcons.solidCircle,
                 size: 15,
                 color: status ?  Colors.green : kActiveIconColor,
               ),

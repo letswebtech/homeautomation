@@ -129,7 +129,6 @@ class WelcomeScreen extends StatelessWidget {
                                         icon: roomsData.rooms[index].icon,
                                         roomName: roomsData.rooms[index].name
                                             .toString(),
-                                        status: true,
                                         isActive: false,
                                         onTap: () async {
                                           Navigator.of(context).pushNamed(

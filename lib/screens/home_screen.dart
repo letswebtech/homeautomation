@@ -36,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   int _selectedPageIndex = 2;
-
-  void _selectPage(int index){
+  int _buildCount = 1;
+  void _selectPage(int index) {
     setState(() {
       _selectedPageIndex = index;
     });
@@ -45,6 +45,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if(_buildCount == 1){
+      _buildCount++;
+      final modalData = ModalRoute.of(context).settings.arguments;
+      if(modalData != null){
+       _selectedPageIndex = modalData; 
+      }
+    }
+    
     final userData = Provider.of<Auth>(context, listen: false);
     final user = userData.userProfile;
     return Scaffold(

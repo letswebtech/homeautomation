@@ -44,7 +44,7 @@ class AppDrawer extends StatelessWidget {
                     leading: Icon(FontAwesomeIcons.tachometerAlt),
                     title: Text('Home'),
                     onTap: () {
-                      Navigator.pushNamed(context, HomeScreen.routeName);
+                      Navigator.pushNamed(context, HomeScreen.routeName, arguments: 2);
                     },
                   ),
                   Divider(),
@@ -52,7 +52,7 @@ class AppDrawer extends StatelessWidget {
                     leading: Icon(FontAwesomeIcons.user),
                     title: Text('Profile'),
                     onTap: () {
-                      Navigator.pushNamed(context, UserScreen.routeName);
+                      Navigator.pushNamed(context, HomeScreen.routeName, arguments: 4);
                     },
                   ),
                   Divider(),
@@ -60,7 +60,7 @@ class AppDrawer extends StatelessWidget {
                     leading: Icon(FontAwesomeIcons.laptopHouse),
                     title: Text('Rooms'),
                     onTap: () {
-                      Navigator.pushNamed(context, RoomScreen.routeName);
+                      Navigator.pushNamed(context, HomeScreen.routeName, arguments: 0);
                     },
                   ),
                   Divider(),
@@ -68,7 +68,7 @@ class AppDrawer extends StatelessWidget {
                     leading: Icon(FontAwesomeIcons.hdd),
                     title: Text('Devices'),
                     onTap: () {
-                      Navigator.pushNamed(context, DeviceScreen.routeName);
+                      Navigator.pushNamed(context, HomeScreen.routeName, arguments: 1);
                     },
                   ),
                   Divider(),
@@ -76,7 +76,7 @@ class AppDrawer extends StatelessWidget {
                     leading: Icon(FontAwesomeIcons.robot),
                     title: Text('Automation'),
                     onTap: () {
-                      Navigator.pushNamed(context, AutomationScreen.routeName);
+                      Navigator.pushNamed(context, HomeScreen.routeName, arguments: 3);
                     },
                   ),
                   Divider(),
@@ -84,7 +84,7 @@ class AppDrawer extends StatelessWidget {
                     leading: Icon(FontAwesomeIcons.lightbulb),
                     title: Text('Appliances'),
                     onTap: () {
-                      Navigator.pushNamed(context, DeviceScreen.routeName);
+                      Navigator.pushNamed(context, HomeScreen.routeName, arguments: 2);
                     },
                   ),
                   Divider(),

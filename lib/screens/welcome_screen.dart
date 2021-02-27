@@ -84,7 +84,7 @@ class WelcomeScreen extends StatelessWidget {
                                             roomName: devicesData
                                                 .deviceComponents[index].name
                                                 .toString(),
-                                            statusMessage: "off",
+                                            status: true,
                                             isActive: false,
                                             onTap: () async {
                                               Navigator.of(context).pushNamed(
@@ -129,7 +129,7 @@ class WelcomeScreen extends StatelessWidget {
                                         icon: roomsData.rooms[index].icon,
                                         roomName: roomsData.rooms[index].name
                                             .toString(),
-                                        statusMessage: "off",
+                                        status: true,
                                         isActive: false,
                                         onTap: () async {
                                           Navigator.of(context).pushNamed(
@@ -182,7 +182,7 @@ class WelcomeScreen extends StatelessWidget {
                                         roomName: devicesData
                                             .devices[index].name
                                             .toString(),
-                                        statusMessage: "off",
+                                        status: true,
                                         isActive: false,
                                         onTap: () async {
                                           Navigator.of(context).pushNamed(

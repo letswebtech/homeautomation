@@ -24,18 +24,18 @@ class ScreenTwo extends StatelessWidget {
                     DeviceItemCard(
                       icon: Icons.star,
                       roomName: "Living Room Lamp",
-                      statusMessage: "off",
+                      status: true,
                     ),
                     DeviceItemCard(
                       icon: Icons.storage,
                       roomName: "Living Room Lamp",
-                      statusMessage: "60%",
+                      status: true,
                       isActive: true,
                     ),
                     DeviceItemCard(
                       icon: Icons.notifications,
                       roomName: "Living Room Lamp",
-                      statusMessage: "off",
+                      status: true,
                     ),
                   ],
                 ),
@@ -44,17 +44,17 @@ class ScreenTwo extends StatelessWidget {
                     DeviceItemCard(
                       icon: Icons.scatter_plot,
                       roomName: "Living Room Lamp",
-                      statusMessage: "off",
+                      status: true,
                     ),
                     DeviceItemCard(
                       icon: Icons.home,
                       roomName: "Living Room Lamp",
-                      statusMessage: "off",
+                      status: true,
                     ),
                     DeviceItemCard(
                       icon: Icons.lightbulb_outline,
                       roomName: "Living Room Lamp",
-                      statusMessage: "off",
+                      status: true,
                     ),
                   ],
                 ),
@@ -63,17 +63,17 @@ class ScreenTwo extends StatelessWidget {
                     DeviceItemCard(
                       icon: Icons.offline_bolt,
                       roomName: "Living Room Lamp",
-                      statusMessage: "off",
+                      status: true,
                     ),
                     DeviceItemCard(
                       icon: Icons.stairs,
                       roomName: "Stair Light",
-                      statusMessage: "off",
+                      status: true,
                     ),
                     DeviceItemCard(
                       icon: Icons.kitchen,
                       roomName: "Kitchen",
-                      statusMessage: "off",
+                      status: true,
                     ),
                   ],
                 ),

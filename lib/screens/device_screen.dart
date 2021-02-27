@@ -120,7 +120,7 @@ class DeviceScreen extends StatelessWidget {
                                       roomName: devicesData
                                           .devices[index].name
                                           .toString(),
-                                      statusMessage: "off",
+                                      status: true,
                                       isActive: false,
                                       onTap: () async {
                                         Navigator.of(context).pushNamed(ComponentListScreen.routeName, arguments: {

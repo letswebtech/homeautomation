@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../containts.dart';
 
@@ -6,11 +7,10 @@ class DeviceItemCard extends StatelessWidget {
   final IconData icon;
   final ImageProvider<Object> imageIcon;
   final String roomName;
-  final String statusMessage;
+  bool status;
   bool isActive;
   Function onTap;
   Function onDoubleTap;
-  Function onDoubl;
   Function onLongPress;
   Key key;
 
@@ -18,7 +18,7 @@ class DeviceItemCard extends StatelessWidget {
     this.key,
     @required this.icon,
     @required this.roomName,
-    @required this.statusMessage,
+    this.status = null,
     this.isActive = false,
     this.imageIcon,
     this.onTap,
@@ -67,13 +67,12 @@ class DeviceItemCard extends StatelessWidget {
                 fontSize: 15,
               ),
             ),
-            Text(
-              "$statusMessage",
-              style: TextStyle(
-                color: Color.fromRGBO(189, 189, 189, .8),
-                fontSize: 14,
+            if(status != null)
+              Icon(
+                FontAwesomeIcons.dotCircle,
+                size: 15,
+                color: status ?  Colors.green : kActiveIconColor,
               ),
-            ),
           ],
         ),
       ),

@@ -67,7 +67,6 @@ class RoomScreen extends StatelessWidget {
                                   icon: roomsData.rooms[index].icon,
                                   roomName:
                                       roomsData.rooms[index].name.toString(),
-                                  statusMessage: "off",
                                   isActive: false,
                                   onTap: () async {
                                     Navigator.of(context).pushNamed(ComponentListScreen.routeName, arguments: {

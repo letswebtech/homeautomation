@@ -193,7 +193,6 @@ class _MainPageState extends State<MainPage> {
               return DeviceItemCard(
                 icon: kApplianceList[_component[index].type]["icon"],
                 roomName: _component[index].name,
-                statusMessage: "",
                 isActive: false,
                 onTap: () async {
                   _updatedDeviceComponent(context, index);

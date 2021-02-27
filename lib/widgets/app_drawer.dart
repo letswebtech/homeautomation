@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import '../screens/automation_screen.dart';
+import '../screens/device_screen.dart';
+import '../screens/room_screen.dart';
+import '../screens/user_screen.dart';
 import '../providers/auth.dart';
 import '../screens/home_screen.dart';
 
@@ -47,31 +51,41 @@ class AppDrawer extends StatelessWidget {
                   ListTile(
                     leading: Icon(FontAwesomeIcons.user),
                     title: Text('Profile'),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, UserScreen.routeName);
+                    },
                   ),
                   Divider(),
                   ListTile(
                     leading: Icon(FontAwesomeIcons.laptopHouse),
                     title: Text('Rooms'),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, RoomScreen.routeName);
+                    },
                   ),
                   Divider(),
                   ListTile(
                     leading: Icon(FontAwesomeIcons.hdd),
                     title: Text('Devices'),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, DeviceScreen.routeName);
+                    },
                   ),
                   Divider(),
                   ListTile(
                     leading: Icon(FontAwesomeIcons.robot),
                     title: Text('Automation'),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, AutomationScreen.routeName);
+                    },
                   ),
                   Divider(),
                   ListTile(
                     leading: Icon(FontAwesomeIcons.lightbulb),
-                    title: Text('Components'),
-                    onTap: () {},
+                    title: Text('Appliances'),
+                    onTap: () {
+                      Navigator.pushNamed(context, DeviceScreen.routeName);
+                    },
                   ),
                   Divider(),
                   ListTile(

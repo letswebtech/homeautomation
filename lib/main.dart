@@ -12,6 +12,12 @@ import './screens/home_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/auth_screen.dart';
 import './screens/getting_started/getting_started_screen.dart';
+import './screens/automation_screen.dart';
+import './screens/device_screen.dart';
+import './screens/room_screen.dart';
+import './screens/user_screen.dart';
+import './screens/home_screen.dart';
+
 import './providers/auth.dart';
 
 void main() async {
@@ -68,6 +74,10 @@ class SmartHome extends StatelessWidget {
               }),
           routes: {
             AuthScreen.routeName: (ctx) => AuthScreen(),
+            UserScreen.routeName: (ctx) => UserScreen(),
+            RoomScreen.routeName: (ctx) => RoomScreen(),
+            DeviceScreen.routeName: (ctx) => DeviceScreen(),
+            AutomationScreen.routeName: (ctx) => AutomationScreen(),
             CreateRoomScreen.routeName: (ctx) => CreateRoomScreen(),
             CreateDeviceScreen.routeName: (ctx) => CreateDeviceScreen(),
             CreateDeviceComponentScreen.routeName: (ctx) => CreateDeviceComponentScreen(),

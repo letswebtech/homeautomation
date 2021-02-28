@@ -22,7 +22,6 @@ class _GettingStartedState extends State<GettingStarted> {
 
   void dispose() {
     super.dispose();
-    _pageController.dispose();
   }
 
   @override
@@ -34,16 +33,18 @@ class _GettingStartedState extends State<GettingStarted> {
       } else {
         _currentPage = 0;
       }
-      _pageController.animateToPage(
+
+      if(_pageController.hasClients) {
+        _pageController.animateToPage(
         _currentPage,
         duration: Duration(milliseconds: 550),
         curve: Curves.easeInOut,
       );
+      }
     });
   }
 
   _onPageChanged(int index) {
-    print(index);
     setState(() {
       _currentPage = index;
     });

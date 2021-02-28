@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:smartHome/widgets/device_item_card.dart';
+
+import '../containts.dart';
 
 class AutomationScreen extends StatelessWidget {
   static const routeName = '/automation';
   @override
   Widget build(BuildContext context) {
-    //final userData = Provider.of<Auth>(context, listen: false);
-    //final user = userData.userProfile;
     return SafeArea(
       child: Container(
+        width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            colorFilter: new ColorFilter.mode(kCardColor, BlendMode.darken),
+            image: AssetImage('assets/images/commingsoon.jpg'),
+            fit: BoxFit.fill,
+          ),
+        ),
         child: Column(
           children: [],
         ),

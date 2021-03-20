@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -278,6 +280,32 @@ class Rooms with ChangeNotifier {
     }
   }
 
+liveDeviceStatus(dataArr) async {
+    try {
+        final gpioStatus = jsonDecode(dataArr["gpioStatus"]);
+        final List<DeviceComponent> tempComponent = [];
+        _componentList.forEach((component) {
+          var compIndex = gpioStatus[0]["gpio"].indexOf(component.gpio.toInt());
+          if (compIndex >= 0) {
+            tempComponent.add(DeviceComponent(
+              deviceID: component.deviceID,
+              name: component.name,
+              description: component.description,
+              type: component.type,
+              gpio: component.gpio,
+              status: gpioStatus[0]["status"][compIndex] == 1,
+              isInput: component.isInput,
+              isActive: component.isActive,
+              isFavorite: component.isFavorite,
+            ));
+          }
+        });
+        _componentList = tempComponent;
+        notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
   // Future<void> deleteProduct(String id) async {
   //   final url =
   //       'https://flutter-app-47e55.firebaseio.com/products/$id.json?auth=$authToken';

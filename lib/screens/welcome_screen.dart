@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -12,17 +14,42 @@ import '../widgets/action_button_card.dart';
 import '../widgets/device_item_card.dart';
 import '../providers/devices.dart';
 import 'room/componentList.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static const routeName = '/home';
 
   final _controller = TextEditingController();
+  Socket socket;
 
   Future<void> _refreshDevices(BuildContext context) async {
     final userProfile = Provider.of<Auth>(context, listen: false).userProfile;
-    await Provider.of<Devices>(context, listen: false).fetchAndSetDevices();
     await Provider.of<Rooms>(context, listen: false).fetchAndSetRooms();
-    await Provider.of<Devices>(context, listen: false).fetchAndSetComponents();
+    final devicesData = Provider.of<Devices>(context, listen: false);
+    await devicesData.fetchAndSetDevices();
+    await devicesData.fetchAndSetComponents();
+    
+    final devices = devicesData.devices;
+    final deviceIDs = devices.map((device) => device.id).toList();
+    final String queryParam =
+        json.encode({"deviceUID": deviceIDs, "isDevice": false});
+    socket = io(
+      'https://smarthome-socket.herokuapp.com',
+      OptionBuilder().setTransports(['websocket']).setQuery(
+          {"queryParam": queryParam}).build(),
+    );
+    socket.connect();
+    socket.onDisconnect((_) => print('disconnect'));
+
+    // request all device status
+    deviceIDs.forEach((deviceUID) {
+      final dataObj = {"deviceUID": deviceUID, "gpio": 0};
+      socket.emit("deviceStatusRequest", dataObj);
+    });
+
+    socket.on("deviceStatusResponse", (dataArr) {
+      devicesData.liveDeviceStatus(dataArr);
+    });
   }
 
   @override
@@ -84,7 +111,8 @@ class WelcomeScreen extends StatelessWidget {
                                             roomName: devicesData
                                                 .deviceComponents[index].name
                                                 .toString(),
-                                            status: true,
+                                            status: devicesData
+                                                .deviceComponents[index].status,
                                             isActive: false,
                                             onTap: () async {
                                               Navigator.of(context).pushNamed(
@@ -181,7 +209,8 @@ class WelcomeScreen extends StatelessWidget {
                                         roomName: devicesData
                                             .devices[index].name
                                             .toString(),
-                                        status: true,
+                                        status:
+                                            devicesData.devices[index].status,
                                         isActive: false,
                                         onTap: () async {
                                           Navigator.of(context).pushNamed(

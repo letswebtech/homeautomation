@@ -91,7 +91,8 @@ class ComponentListScreen extends StatelessWidget {
                                         roomName: devicesData
                                             .deviceComponents[index].name
                                             .toString(),
-                                        status: true,
+                                        status: devicesData
+                                            .deviceComponents[index].status,
                                         isActive: false,
                                         onTap: () async {
                                           Navigator.of(context).pushNamed(
@@ -121,7 +122,8 @@ class ComponentListScreen extends StatelessWidget {
                                         roomName: devicesData
                                             .deviceComponents[index].name
                                             .toString(),
-                                        status: true,
+                                        status: devicesData
+                                            .deviceComponents[index].status,
                                         isActive: false,
                                         onTap: () async {
                                           Navigator.of(context).pushNamed(

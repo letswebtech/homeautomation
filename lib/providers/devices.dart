@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -9,6 +11,7 @@ class DeviceComponent {
   String type;
   int gpio;
   bool isInput;
+  bool status;
   bool isFavorite;
   bool isActive;
   final String deviceID;
@@ -21,6 +24,7 @@ class DeviceComponent {
       @required this.isInput,
       this.isFavorite = false,
       this.isActive = true,
+      this.status = false,
       this.deviceID});
 }
 
@@ -33,6 +37,7 @@ class Device {
   final List<String> room;
   bool isFavorite;
   bool isActive;
+  bool status;
 
   Device({
     @required this.id,
@@ -42,6 +47,7 @@ class Device {
     this.user,
     this.room,
     this.isFavorite = false,
+    this.status = false,
     this.isActive = true,
   });
 }
@@ -89,6 +95,7 @@ class Devices with ChangeNotifier {
             name: deviceComponent["name"],
             description: deviceComponent["description"],
             type: deviceComponent["type"],
+            status: false,
             gpio: deviceComponent["gpio"],
             isInput: deviceComponent["is_input"],
             isActive: deviceComponent["is_active"],
@@ -102,6 +109,7 @@ class Devices with ChangeNotifier {
             name: device["name"],
             description: device["description"],
             isFavorite: device["is_favorite"],
+            status: false,
             isActive: device["is_active"],
             room: List<String>.from(device["room"]),
             user: List<String>.from(device["user"]),
@@ -138,6 +146,7 @@ class Devices with ChangeNotifier {
               description: deviceComponent.description,
               type: deviceComponent.type,
               gpio: deviceComponent.gpio,
+              status: deviceComponent.status,
               isInput: deviceComponent.isInput,
               isActive: deviceComponent.isActive,
               isFavorite: deviceComponent.isFavorite,
@@ -270,6 +279,49 @@ class Devices with ChangeNotifier {
       }
     } else {
       print('...');
+    }
+  }
+
+  //get live status of devices
+  liveDeviceStatus(dataArr) async {
+    try {
+      final deviceIndex =
+          _devices.indexWhere((device) => device.id == dataArr["deviceUID"]);
+      if (deviceIndex >= 0) {
+        final gpioStatus = jsonDecode(dataArr["gpioStatus"]);
+        final List<DeviceComponent> tempComponent = [];
+        _devices[deviceIndex].component.forEach((component) {
+          var compIndex = gpioStatus[0]["gpio"].indexOf(component.gpio.toInt());
+          if (compIndex >= 0) {
+            tempComponent.add(DeviceComponent(
+              deviceID: component.deviceID,
+              name: component.name,
+              description: component.description,
+              type: component.type,
+              gpio: component.gpio,
+              status: gpioStatus[0]["status"][compIndex] == 1,
+              isInput: component.isInput,
+              isActive: component.isActive,
+              isFavorite: component.isFavorite,
+            ));
+          }
+        });
+
+        _devices[deviceIndex] = Device(
+          id: _devices[deviceIndex].id,
+          name: _devices[deviceIndex].name,
+          description: _devices[deviceIndex].description,
+          isFavorite: _devices[deviceIndex].isFavorite,
+          isActive: _devices[deviceIndex].isActive,
+          room: _devices[deviceIndex].room,
+          status: true,
+          user: _devices[deviceIndex].user,
+          component: tempComponent,
+        );
+        await fetchAndSetComponents(_devices[deviceIndex].id);
+      }
+    } catch (error) {
+      throw error;
     }
   }
 }

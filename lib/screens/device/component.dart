@@ -51,6 +51,7 @@ class _CreateDeviceComponentScreenState
     final dataObj = {"deviceUID": deviceUID, "gpio": gpio};
     socket.emit("deviceStatusRequest", dataObj);
     socket.on("deviceStatusResponse", (dataArr) {
+      print(dataArr);
       final  gpioStatus = jsonDecode(dataArr["gpioStatus"]);
       final gpioIndex = gpioStatus[0]["gpio"].indexOf(gpio);
       if (this.mounted) {

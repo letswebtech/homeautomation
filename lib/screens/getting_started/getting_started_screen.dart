@@ -17,7 +17,10 @@ class GettingStarted extends StatefulWidget {
 }
 
 class _GettingStartedState extends State<GettingStarted> {
+  //TODO fix UI for ScreenTwo
   int _currentPage = 0;
+  int _totalPage = 3;
+
   final PageController _pageController = PageController(initialPage: 0);
 
   void dispose() {
@@ -28,18 +31,18 @@ class _GettingStartedState extends State<GettingStarted> {
   void initState() {
     super.initState();
     Timer.periodic(Duration(seconds: 5), (Timer timer) {
-      if (_currentPage < 4) {
+      if (_currentPage < _totalPage) {
         _currentPage++;
       } else {
         _currentPage = 0;
       }
 
-      if(_pageController.hasClients) {
+      if (_pageController.hasClients) {
         _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 550),
-        curve: Curves.easeInOut,
-      );
+          _currentPage,
+          duration: Duration(milliseconds: 550),
+          curve: Curves.easeInOut,
+        );
       }
     });
   }
@@ -68,7 +71,7 @@ class _GettingStartedState extends State<GettingStarted> {
                   onPageChanged: _onPageChanged,
                   children: [
                     ScreenOne(),
-                    ScreenTwo(),
+                    //ScreenTwo(),
                     ScreenThree(),
                     ScreenFour(),
                   ],
@@ -90,7 +93,7 @@ class _GettingStartedState extends State<GettingStarted> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          for (var i = 0; i < 4; i++)
+                          for (var i = 0; i < _totalPage; i++)
                             PageviewIndicator(_currentPage == i)
                         ],
                       ),

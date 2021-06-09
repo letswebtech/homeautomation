@@ -16,14 +16,18 @@ class SocialLoginCard extends StatelessWidget {
             IconButton(
               icon: Icon(FontAwesomeIcons.facebookSquare),
               iconSize: 30,
-              onPressed: () {},
+              onPressed: () async {
+                await Provider.of<Auth>(context, listen: false)
+                    .signInWithFacebook();
+              },
             ),
             IconButton(
               icon: Icon(FontAwesomeIcons.google),
               iconSize: 30,
-              onPressed: () async{
-                await Provider.of<Auth>(context, listen: false).signInWithGoogle();
-               // Navigator.pushNamed(context, HomeScreen.routeName);
+              onPressed: () async {
+                await Provider.of<Auth>(context, listen: false)
+                    .signInWithGoogle();
+                // Navigator.pushNamed(context, HomeScreen.routeName);
               },
             ),
             IconButton(

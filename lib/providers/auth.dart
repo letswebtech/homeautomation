@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:http/http.dart' as http;
 import '../models/http_exception.dart';
@@ -15,6 +16,7 @@ class Auth with ChangeNotifier {
   String _userId;
   User _user;
   GoogleAuthCredential credential;
+  AuthCredential fbcredential;
 
   bool get isAuth {
     if (_auth.currentUser == null) {
@@ -44,7 +46,7 @@ class Auth with ChangeNotifier {
 
     final userAppSetting =
         json.decode(prefs.getString('userAppSetting')) as Map<String, Object>;
-    
+
     return userAppSetting['isIntroduced'];
   }
 
@@ -69,6 +71,8 @@ class Auth with ChangeNotifier {
             email: email, password: password);
       } else if (condition == "googleLogin") {
         response = await _auth.signInWithCredential(credential);
+      } else if (condition == "facebookLogin") {
+        response = await _auth.signInWithCredential(fbcredential);
       }
 
       if (response == null) {
@@ -148,5 +152,13 @@ class Auth with ChangeNotifier {
     );
 
     return await _authenticate(null, null, "googleLogin");
+  }
+
+  Future<void> signInWithFacebook() async {
+    final AccessToken result = await FacebookAuth.instance.login();
+    // Create a credential from the access token
+    this.fbcredential = FacebookAuthProvider.credential(result.token);
+
+    return await _authenticate(null, null, "facebookLogin");
   }
 }
